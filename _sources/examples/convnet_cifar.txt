@@ -1,0 +1,34 @@
+
+
+.. _example_convnet_cifar.py:
+
+
+Convnets for image classification (2)
+=====================================
+
+
+
+
+.. rst-class:: horizontal
+
+
+      .. image:: images/convnet_cifar_001.png
+            :scale: 40
+
+      .. image:: images/convnet_cifar_002.png
+            :scale: 40
+
+
+**Script output**::
+
+  Test error rate: 0.3108
+
+
+
+**Python source code:** :download:`convnet_cifar.py <convnet_cifar.py>`
+
+.. literalinclude:: convnet_cifar.py
+    :lines: 8-
+
+**Total running time of the example:**  3 minutes  19.3 seconds
+    

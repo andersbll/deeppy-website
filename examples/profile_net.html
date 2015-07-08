@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Profile network &mdash; DeepPy 0.1.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="DeepPy 0.1.dev0 documentation" href="../index.html" />
+    <link rel="up" title="Examples" href="index.html" />
+    <link rel="next" title="API reference" href="../api-reference/index.html" />
+    <link rel="prev" title="Siamese networks" href="siamese_mnist.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="profile-network">
+<span id="example-profile-net-py"></span><h1>Profile network<a class="headerlink" href="#profile-network" title="Permalink to this headline">¶</a></h1>
+<p class="horizontal"><strong>Script output</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>conv:           fprop(): 0.001879 s      bprop(): 0.003813 s
+act_relu:       fprop(): 0.000358 s      bprop(): 0.000549 s
+pool:           fprop(): 0.000520 s      bprop(): 0.000759 s
+conv:           fprop(): 0.002540 s      bprop(): 0.008044 s
+act_relu:       fprop(): 0.000229 s      bprop(): 0.000286 s
+pool:           fprop(): 0.000195 s      bprop(): 0.000358 s
+conv:           fprop(): 0.001326 s      bprop(): 0.003928 s
+act_relu:       fprop(): 0.000190 s      bprop(): 0.000232 s
+pool:           fprop(): 0.000154 s      bprop(): 0.000295 s
+flatten:        fprop(): 0.000030 s      bprop(): 0.000018 s
+fc_drop:        fprop(): 0.000215 s      bprop(): 0.000272 s
+act_relu:       fprop(): 0.000028 s      bprop(): 0.000049 s
+total_duration: 0.026268 s
+net._bprop(): 0.025920 s
+</pre></div>
+</div>
+<p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/profile_net.py"><code class="xref download docutils literal"><span class="pre">profile_net.py</span></code></a></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">deeppy</span> <span class="kn">as</span> <span class="nn">dp</span>
+
+
+<span class="k">def</span> <span class="nf">avg_running_time</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">reps</span><span class="p">):</span>
+    <span class="c"># Memory allocation forces GPU synchronization</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">reps</span><span class="p">):</span>
+        <span class="n">fun</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span> <span class="o">/</span> <span class="n">reps</span>
+
+
+<span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+    <span class="nb">input</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">Input</span><span class="o">.</span><span class="n">from_any</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+    <span class="n">net</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+    <span class="n">batch</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">batches</span><span class="p">())</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">total_duration</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">layer_idx</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">layers</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">def</span> <span class="nf">fprop</span><span class="p">():</span>
+            <span class="n">layer</span><span class="o">.</span><span class="n">fprop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;train&#39;</span><span class="p">)</span>
+        <span class="n">fprop_duration</span> <span class="o">=</span> <span class="n">avg_running_time</span><span class="p">(</span><span class="n">fprop</span><span class="p">,</span> <span class="n">reps</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">fprop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;train&#39;</span><span class="p">)</span>
+        <span class="n">to_x</span> <span class="o">=</span> <span class="n">layer_idx</span> <span class="o">&gt;</span> <span class="n">net</span><span class="o">.</span><span class="n">bprop_until</span>
+
+        <span class="k">def</span> <span class="nf">bprop</span><span class="p">():</span>
+            <span class="n">layer</span><span class="o">.</span><span class="n">bprop</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">to_x</span><span class="o">=</span><span class="n">to_x</span><span class="p">)</span>
+        <span class="n">bprop_duration</span> <span class="o">=</span> <span class="n">avg_running_time</span><span class="p">(</span><span class="n">bprop</span><span class="p">,</span> <span class="n">reps</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:   </span><span class="se">\t</span><span class="s">fprop(): </span><span class="si">%.6f</span><span class="s"> s </span><span class="se">\t</span><span class="s"> bprop(): </span><span class="si">%.6f</span><span class="s"> s&#39;</span>
+              <span class="o">%</span> <span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">fprop_duration</span><span class="p">,</span> <span class="n">bprop_duration</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="n">total_duration</span> <span class="o">+=</span> <span class="n">fprop_duration</span> <span class="o">+</span> <span class="n">bprop_duration</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;total_duration: </span><span class="si">%.6f</span><span class="s"> s&#39;</span> <span class="o">%</span> <span class="n">total_duration</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">nn_bprop</span><span class="p">():</span>
+        <span class="n">net</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+    <span class="n">nn_bprop_duration</span> <span class="o">=</span> <span class="n">avg_running_time</span><span class="p">(</span><span class="n">nn_bprop</span><span class="p">,</span> <span class="n">reps</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;net._bprop(): </span><span class="si">%.6f</span><span class="s"> s&#39;</span> <span class="o">%</span> <span class="n">nn_bprop_duration</span><span class="p">)</span>
+
+
+<span class="c"># Fetch CIFAR10 data</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">CIFAR10</span><span class="p">()</span>
+<span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">dp_dtypes</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="c"># Prepare network inputs</span>
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">128</span>
+<span class="n">train_input</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">SupervisedInput</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+
+<span class="c"># Setup network</span>
+<span class="k">def</span> <span class="nf">conv_layer</span><span class="p">(</span><span class="n">n_filters</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">dp</span><span class="o">.</span><span class="n">Convolution</span><span class="p">(</span>
+        <span class="n">n_filters</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+        <span class="n">filter_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+        <span class="n">border_mode</span><span class="o">=</span><span class="s">&#39;full&#39;</span><span class="p">,</span>
+        <span class="n">weights</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">AutoFiller</span><span class="p">(</span><span class="n">gain</span><span class="o">=</span><span class="mf">1.25</span><span class="p">),</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.003</span><span class="p">),</span>
+    <span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">pool_layer</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">dp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span>
+        <span class="n">win_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+        <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="n">border_mode</span><span class="o">=</span><span class="s">&#39;same&#39;</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s">&#39;max&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<span class="n">net</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">NeuralNetwork</span><span class="p">(</span>
+    <span class="n">layers</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">conv_layer</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span>
+        <span class="n">dp</span><span class="o">.</span><span class="n">Activation</span><span class="p">(</span><span class="s">&#39;relu&#39;</span><span class="p">),</span>
+        <span class="n">pool_layer</span><span class="p">(),</span>
+        <span class="n">conv_layer</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span>
+        <span class="n">dp</span><span class="o">.</span><span class="n">Activation</span><span class="p">(</span><span class="s">&#39;relu&#39;</span><span class="p">),</span>
+        <span class="n">pool_layer</span><span class="p">(),</span>
+        <span class="n">conv_layer</span><span class="p">(</span><span class="mi">64</span><span class="p">),</span>
+        <span class="n">dp</span><span class="o">.</span><span class="n">Activation</span><span class="p">(</span><span class="s">&#39;relu&#39;</span><span class="p">),</span>
+        <span class="n">pool_layer</span><span class="p">(),</span>
+        <span class="n">dp</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
+        <span class="n">dp</span><span class="o">.</span><span class="n">DropoutFullyConnected</span><span class="p">(</span>
+            <span class="n">n_out</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+            <span class="n">weights</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">AutoFiller</span><span class="p">(</span><span class="n">gain</span><span class="o">=</span><span class="mf">1.25</span><span class="p">),</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.03</span><span class="p">)</span>
+        <span class="p">),</span>
+        <span class="n">dp</span><span class="o">.</span><span class="n">Activation</span><span class="p">(</span><span class="s">&#39;relu&#39;</span><span class="p">),</span>
+        <span class="n">dp</span><span class="o">.</span><span class="n">FullyConnected</span><span class="p">(</span>
+            <span class="n">n_out</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">n_classes</span><span class="p">,</span>
+            <span class="n">weights</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">AutoFiller</span><span class="p">(</span><span class="n">gain</span><span class="o">=</span><span class="mf">1.25</span><span class="p">)),</span>
+        <span class="p">)</span>
+    <span class="p">],</span>
+    <span class="n">loss</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">MultinomialLogReg</span><span class="p">(),</span>
+<span class="p">)</span>
+
+<span class="n">profile</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">train_input</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Total running time of the example:</strong>  0 minutes  3.1 seconds</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">DeepPy</a></h1>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation-guide.html">Installation guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributor-guide.html">Contributor guide</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      
+      
+    </div>
+
+    
+    <a href="https://github.com/andersbll/deeppy" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

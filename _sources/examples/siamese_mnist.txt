@@ -1,0 +1,24 @@
+
+
+.. _example_siamese_mnist.py:
+
+
+Siamese networks
+================
+
+
+
+
+.. image:: images/siamese_mnist_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`siamese_mnist.py <siamese_mnist.py>`
+
+.. literalinclude:: siamese_mnist.py
+    :lines: 8-
+
+**Total running time of the example:**  1 minutes  12.2 seconds
+    

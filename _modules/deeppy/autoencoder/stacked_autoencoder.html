@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>deeppy.autoencoder.stacked_autoencoder &mdash; DeepPy 0.1.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/style.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="DeepPy 0.1.dev0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for deeppy.autoencoder.stacked_autoencoder</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">ParamMixin</span>
+<span class="kn">from</span> <span class="nn">..feedforward.loss</span> <span class="kn">import</span> <span class="n">Loss</span>
+<span class="kn">from</span> <span class="nn">.autoencoder</span> <span class="kn">import</span> <span class="n">Autoencoder</span>
+
+
+<div class="viewcode-block" id="InputWrap"><a class="viewcode-back" href="../../../api-reference/autoencoder.html#deeppy.autoencoder.stacked_autoencoder.InputWrap">[docs]</a><span class="k">class</span> <span class="nc">InputWrap</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="nb">input</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_shape</span> <span class="o">=</span> <span class="n">x_shape</span>
+
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="c"># Wrap Input methods</span>
+        <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ae</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="StackedAutoencoderLayer"><a class="viewcode-back" href="../../../api-reference/autoencoder.html#deeppy.autoencoder.stacked_autoencoder.StackedAutoencoderLayer">[docs]</a><span class="k">class</span> <span class="nc">StackedAutoencoderLayer</span><span class="p">(</span><span class="n">Autoencoder</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ae</span><span class="p">,</span> <span class="n">prev_layers</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ae</span> <span class="o">=</span> <span class="n">ae</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prev_layers</span> <span class="o">=</span> <span class="n">prev_layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
+        <span class="c"># Setup layers sequentially</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">next_shape</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">x_shape</span>
+        <span class="k">for</span> <span class="n">ae</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev_layers</span><span class="p">:</span>
+            <span class="n">ae</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="n">InputWrap</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">next_shape</span><span class="p">))</span>
+            <span class="n">next_shape</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">output_shape</span><span class="p">(</span><span class="n">next_shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ae</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="n">InputWrap</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">next_shape</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">ae</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev_layers</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ae</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_reconstruct_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">ae</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev_layers</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ae</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x_prime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ae</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ae</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prev_layers</span><span class="p">):</span>
+            <span class="n">x_prime</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">x_prime</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x_prime</span>
+
+    <span class="k">def</span> <span class="nf">_embed_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">ae</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev_layers</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ae</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="c"># Wrap non-overriden Autoencoder attributes</span>
+        <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ae</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="StackedAutoencoder"><a class="viewcode-back" href="../../../api-reference/autoencoder.html#deeppy.autoencoder.stacked_autoencoder.StackedAutoencoder">[docs]</a><span class="k">class</span> <span class="nc">StackedAutoencoder</span><span class="p">(</span><span class="n">Autoencoder</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s">&#39;bce&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">Loss</span><span class="o">.</span><span class="n">from_any</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">next_shape</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">x_shape</span>
+        <span class="k">for</span> <span class="n">ae</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">ae</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="n">InputWrap</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">next_shape</span><span class="p">))</span>
+            <span class="n">next_shape</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">output_shape</span><span class="p">(</span><span class="n">next_shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="n">next_shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">all_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">ae</span><span class="o">.</span><span class="n">_params</span> <span class="k">for</span> <span class="n">ae</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span>
+                      <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ae</span><span class="p">,</span> <span class="n">ParamMixin</span><span class="p">)]</span>
+        <span class="c"># Concatenate lists in list</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">all_params</span><span class="p">))</span>
+
+<div class="viewcode-block" id="StackedAutoencoder.encode"><a class="viewcode-back" href="../../../api-reference/autoencoder.html#deeppy.autoencoder.stacked_autoencoder.StackedAutoencoder.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">ae</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+</div>
+<div class="viewcode-block" id="StackedAutoencoder.decode"><a class="viewcode-back" href="../../../api-reference/autoencoder.html#deeppy.autoencoder.stacked_autoencoder.StackedAutoencoder.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">ae</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">):</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y</span>
+</div>
+<div class="viewcode-block" id="StackedAutoencoder.decode_bprop"><a class="viewcode-back" href="../../../api-reference/autoencoder.html#deeppy.autoencoder.stacked_autoencoder.StackedAutoencoder.decode_bprop">[docs]</a>    <span class="k">def</span> <span class="nf">decode_bprop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_grad</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">ae</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">x_grad</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">decode_bprop</span><span class="p">(</span><span class="n">x_grad</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x_grad</span>
+</div>
+<div class="viewcode-block" id="StackedAutoencoder.encode_bprop"><a class="viewcode-back" href="../../../api-reference/autoencoder.html#deeppy.autoencoder.stacked_autoencoder.StackedAutoencoder.encode_bprop">[docs]</a>    <span class="k">def</span> <span class="nf">encode_bprop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_grad</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">ae</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">):</span>
+            <span class="n">y_grad</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">encode_bprop</span><span class="p">(</span><span class="n">y_grad</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y_grad</span>
+</div>
+    <span class="k">def</span> <span class="nf">_output_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape</span><span class="p">):</span>
+        <span class="n">next_shape</span> <span class="o">=</span> <span class="n">input_shape</span>
+        <span class="k">for</span> <span class="n">ae</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">next_shape</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">output_shape</span><span class="p">(</span><span class="n">next_shape</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">next_shape</span>
+
+<div class="viewcode-block" id="StackedAutoencoder.feedforward_layers"><a class="viewcode-back" href="../../../api-reference/autoencoder.html#deeppy.autoencoder.stacked_autoencoder.StackedAutoencoder.feedforward_layers">[docs]</a>    <span class="k">def</span> <span class="nf">feedforward_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">feedforward_layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">ae</span><span class="o">.</span><span class="n">feedforward_layers</span><span class="p">()</span> <span class="k">for</span> <span class="n">ae</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">feedforward_layers</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="StackedAutoencoder.ae_models"><a class="viewcode-back" href="../../../api-reference/autoencoder.html#deeppy.autoencoder.stacked_autoencoder.StackedAutoencoder.ae_models">[docs]</a>    <span class="k">def</span> <span class="nf">ae_models</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ae</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">StackedAutoencoderLayer</span><span class="p">(</span><span class="n">ae</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[:</span><span class="n">i</span><span class="p">])</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">DeepPy</a></h1>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation-guide.html">Installation guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributor-guide.html">Contributor guide</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      
+      
+    </div>
+
+    
+    <a href="https://github.com/andersbll/deeppy" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

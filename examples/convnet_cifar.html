@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Convnets for image classification (2) &mdash; DeepPy 0.1.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="DeepPy 0.1.dev0 documentation" href="../index.html" />
+    <link rel="up" title="Examples" href="index.html" />
+    <link rel="next" title="Autoencoder pretraining of neural networks" href="autoencoders_mnist.html" />
+    <link rel="prev" title="Convnets for image classification (1)" href="convnet_mnist.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="convnets-for-image-classification-2">
+<span id="example-convnet-cifar-py"></span><h1>Convnets for image classification (2)<a class="headerlink" href="#convnets-for-image-classification-2" title="Permalink to this headline">¶</a></h1>
+<a class="horizontal reference internal image-reference" href="../_images/convnet_cifar_001.png"><img alt="../_images/convnet_cifar_001.png" class="horizontal" src="../_images/convnet_cifar_001.png" style="width: 320.0px; height: 240.0px;" /></a>
+<a class="horizontal reference internal image-reference" href="../_images/convnet_cifar_002.png"><img alt="../_images/convnet_cifar_002.png" class="horizontal" src="../_images/convnet_cifar_002.png" style="width: 320.0px; height: 240.0px;" /></a>
+<p><strong>Script output</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>Test error rate: 0.3108
+</pre></div>
+</div>
+<p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/convnet_cifar.py"><code class="xref download docutils literal"><span class="pre">convnet_cifar.py</span></code></a></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">deeppy</span> <span class="kn">as</span> <span class="nn">dp</span>
+
+
+<span class="c"># Fetch CIFAR10 data</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">CIFAR10</span><span class="p">()</span>
+<span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">dp_dtypes</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="c"># Normalize pixel intensities</span>
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">StandardScaler</span><span class="p">()</span>
+<span class="n">scaler</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">)</span>
+<span class="n">x_train</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">x_train</span><span class="p">)</span>
+<span class="n">x_test</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+
+<span class="c"># Prepare network inputs</span>
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">128</span>
+<span class="n">train_input</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">SupervisedInput</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+<span class="n">test_input</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">SupervisedInput</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+
+<span class="c"># Setup network</span>
+<span class="k">def</span> <span class="nf">conv_layer</span><span class="p">(</span><span class="n">n_filters</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">dp</span><span class="o">.</span><span class="n">Convolution</span><span class="p">(</span>
+        <span class="n">n_filters</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+        <span class="n">filter_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+        <span class="n">border_mode</span><span class="o">=</span><span class="s">&#39;full&#39;</span><span class="p">,</span>
+        <span class="n">weights</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">AutoFiller</span><span class="p">(</span><span class="n">gain</span><span class="o">=</span><span class="mf">1.25</span><span class="p">),</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.003</span><span class="p">),</span>
+    <span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">pool_layer</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">dp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span>
+        <span class="n">win_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+        <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="n">border_mode</span><span class="o">=</span><span class="s">&#39;same&#39;</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s">&#39;max&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<span class="n">net</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">NeuralNetwork</span><span class="p">(</span>
+    <span class="n">layers</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">conv_layer</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span>
+        <span class="n">dp</span><span class="o">.</span><span class="n">Activation</span><span class="p">(</span><span class="s">&#39;relu&#39;</span><span class="p">),</span>
+        <span class="n">pool_layer</span><span class="p">(),</span>
+        <span class="n">conv_layer</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span>
+        <span class="n">dp</span><span class="o">.</span><span class="n">Activation</span><span class="p">(</span><span class="s">&#39;relu&#39;</span><span class="p">),</span>
+        <span class="n">pool_layer</span><span class="p">(),</span>
+        <span class="n">conv_layer</span><span class="p">(</span><span class="mi">64</span><span class="p">),</span>
+        <span class="n">dp</span><span class="o">.</span><span class="n">Activation</span><span class="p">(</span><span class="s">&#39;relu&#39;</span><span class="p">),</span>
+        <span class="n">pool_layer</span><span class="p">(),</span>
+        <span class="n">dp</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
+        <span class="n">dp</span><span class="o">.</span><span class="n">DropoutFullyConnected</span><span class="p">(</span>
+            <span class="n">n_out</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+            <span class="n">weights</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">AutoFiller</span><span class="p">(</span><span class="n">gain</span><span class="o">=</span><span class="mf">1.25</span><span class="p">),</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.03</span><span class="p">)</span>
+        <span class="p">),</span>
+        <span class="n">dp</span><span class="o">.</span><span class="n">Activation</span><span class="p">(</span><span class="s">&#39;relu&#39;</span><span class="p">),</span>
+        <span class="n">dp</span><span class="o">.</span><span class="n">FullyConnected</span><span class="p">(</span>
+            <span class="n">n_out</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">n_classes</span><span class="p">,</span>
+            <span class="n">weights</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">AutoFiller</span><span class="p">(</span><span class="n">gain</span><span class="o">=</span><span class="mf">1.25</span><span class="p">)),</span>
+        <span class="p">)</span>
+    <span class="p">],</span>
+    <span class="n">loss</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">MultinomialLogReg</span><span class="p">(),</span>
+<span class="p">)</span>
+
+
+<span class="c"># Train network</span>
+<span class="k">def</span> <span class="nf">val_error</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">net</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">test_input</span><span class="p">)</span>
+<span class="n">n_epochs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="n">learn_rate</span> <span class="o">=</span> <span class="mf">0.05</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">max_epochs</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">n_epochs</span><span class="p">):</span>
+    <span class="n">lr</span> <span class="o">=</span> <span class="n">learn_rate</span><span class="o">/</span><span class="mi">10</span><span class="o">**</span><span class="n">i</span>
+    <span class="n">trainer</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">StochasticGradientDescent</span><span class="p">(</span>
+        <span class="n">max_epochs</span><span class="o">=</span><span class="n">max_epochs</span><span class="p">,</span>
+        <span class="n">learn_rule</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Momentum</span><span class="p">(</span><span class="n">learn_rate</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">train_input</span><span class="p">,</span> <span class="n">val_error</span><span class="p">)</span>
+
+
+<span class="c"># Evaluate on test data</span>
+<span class="n">error</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">test_input</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;Test error rate: </span><span class="si">%.4f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">error</span><span class="p">)</span>
+
+
+<span class="c"># Plot image examples.</span>
+<span class="k">def</span> <span class="nf">plot_img</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s">&#39;nearest&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">&#39;off&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+
+<span class="n">img_bhwc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">x_train</span><span class="p">[:</span><span class="mi">70</span><span class="p">],</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">img_tile</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">misc</span><span class="o">.</span><span class="n">img_tile</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">misc</span><span class="o">.</span><span class="n">img_stretch</span><span class="p">(</span><span class="n">img_bhwc</span><span class="p">),</span> <span class="n">aspect_ratio</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+                            <span class="n">border_color</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">plot_img</span><span class="p">(</span><span class="n">img_tile</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;CIFAR10 example images&#39;</span><span class="p">)</span>
+
+<span class="c"># Plot convolutional filters.</span>
+<span class="n">filters</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">array</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">net</span><span class="o">.</span><span class="n">layers</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">dp</span><span class="o">.</span><span class="n">Convolution</span><span class="p">)]</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">gs</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">height_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">subplot_idxs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">filters</span><span class="p">):</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="n">subplot_idxs</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">misc</span><span class="o">.</span><span class="n">conv_filter_tile</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="s">&#39;gray&#39;</span><span class="p">,</span>
+              <span class="n">interpolation</span><span class="o">=</span><span class="s">&#39;nearest&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&#39;Conv layer </span><span class="si">%i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Total running time of the example:</strong>  3 minutes  19.3 seconds</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">DeepPy</a></h1>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation-guide.html">Installation guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributor-guide.html">Contributor guide</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      
+      
+    </div>
+
+    
+    <a href="https://github.com/andersbll/deeppy" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

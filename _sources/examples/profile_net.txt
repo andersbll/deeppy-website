@@ -1,0 +1,41 @@
+
+
+.. _example_profile_net.py:
+
+
+Profile network
+===============
+
+
+
+
+.. rst-class:: horizontal
+
+
+
+**Script output**::
+
+  conv:           fprop(): 0.001879 s      bprop(): 0.003813 s
+  act_relu:       fprop(): 0.000358 s      bprop(): 0.000549 s
+  pool:           fprop(): 0.000520 s      bprop(): 0.000759 s
+  conv:           fprop(): 0.002540 s      bprop(): 0.008044 s
+  act_relu:       fprop(): 0.000229 s      bprop(): 0.000286 s
+  pool:           fprop(): 0.000195 s      bprop(): 0.000358 s
+  conv:           fprop(): 0.001326 s      bprop(): 0.003928 s
+  act_relu:       fprop(): 0.000190 s      bprop(): 0.000232 s
+  pool:           fprop(): 0.000154 s      bprop(): 0.000295 s
+  flatten:        fprop(): 0.000030 s      bprop(): 0.000018 s
+  fc_drop:        fprop(): 0.000215 s      bprop(): 0.000272 s
+  act_relu:       fprop(): 0.000028 s      bprop(): 0.000049 s
+  total_duration: 0.026268 s
+  net._bprop(): 0.025920 s
+
+
+
+**Python source code:** :download:`profile_net.py <profile_net.py>`
+
+.. literalinclude:: profile_net.py
+    :lines: 8-
+
+**Total running time of the example:**  0 minutes  3.1 seconds
+    

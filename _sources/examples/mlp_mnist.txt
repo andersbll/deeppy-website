@@ -1,0 +1,34 @@
+
+
+.. _example_mlp_mnist.py:
+
+
+Digit classification
+====================
+
+
+
+
+.. rst-class:: horizontal
+
+
+      .. image:: images/mlp_mnist_001.png
+            :scale: 40
+
+      .. image:: images/mlp_mnist_002.png
+            :scale: 40
+
+
+**Script output**::
+
+  Test error rate: 0.0133
+
+
+
+**Python source code:** :download:`mlp_mnist.py <mlp_mnist.py>`
+
+.. literalinclude:: mlp_mnist.py
+    :lines: 8-
+
+**Total running time of the example:**  1 minutes  52.6 seconds
+    

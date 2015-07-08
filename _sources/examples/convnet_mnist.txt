@@ -1,0 +1,30 @@
+
+
+.. _example_convnet_mnist.py:
+
+
+Convnets for image classification (1)
+=====================================
+
+
+
+
+.. rst-class:: horizontal
+
+
+      .. image:: images/convnet_mnist_001.png
+            :scale: 40
+
+      .. image:: images/convnet_mnist_002.png
+            :scale: 40
+
+
+
+
+**Python source code:** :download:`convnet_mnist.py <convnet_mnist.py>`
+
+.. literalinclude:: convnet_mnist.py
+    :lines: 8-
+
+**Total running time of the example:**  4 minutes  48.9 seconds
+    

@@ -1,0 +1,303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>API reference &mdash; DeepPy 0.1.dev0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="DeepPy 0.1.dev0 documentation" href="../index.html" />
+    <link rel="next" title="API reference, deeppy.autoencoder" href="autoencoder.html" />
+    <link rel="prev" title="Profile network" href="../examples/profile_net.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="api-reference">
+<span id="api"></span><h1>API reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="autoencoder.html"><em>deeppy.autoencoder</em></a></li>
+<li><a class="reference internal" href="feedforward.html"><em>deeppy.feedforward</em></a></li>
+</ul>
+</div>
+<div class="section" id="module-deeppy.base">
+<span id="base-classes"></span><h2>Base classes<a class="headerlink" href="#module-deeppy.base" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="deeppy.base.Model">
+<em class="property">class </em><code class="descclassname">deeppy.base.</code><code class="descname">Model</code><a class="reference internal" href="../_modules/deeppy/base.html#Model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.base.Model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#deeppy.base.ParamMixin" title="deeppy.base.ParamMixin"><code class="xref py py-class docutils literal"><span class="pre">deeppy.base.ParamMixin</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="deeppy.base.ParamMixin">
+<em class="property">class </em><code class="descclassname">deeppy.base.</code><code class="descname">ParamMixin</code><a class="reference internal" href="../_modules/deeppy/base.html#ParamMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.base.ParamMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="deeppy.base.PickleMixin">
+<em class="property">class </em><code class="descclassname">deeppy.base.</code><code class="descname">PickleMixin</code><a class="reference internal" href="../_modules/deeppy/base.html#PickleMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.base.PickleMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-deeppy.filler">
+<span id="fillers"></span><h2>Fillers<a class="headerlink" href="#module-deeppy.filler" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="deeppy.filler.AutoFiller">
+<em class="property">class </em><code class="descclassname">deeppy.filler.</code><code class="descname">AutoFiller</code><span class="sig-paren">(</span><em>gain=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/filler.html#AutoFiller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.filler.AutoFiller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#deeppy.filler.Filler" title="deeppy.filler.Filler"><code class="xref py py-class docutils literal"><span class="pre">deeppy.filler.Filler</span></code></a></p>
+<dl class="method">
+<dt id="deeppy.filler.AutoFiller.array">
+<code class="descname">array</code><span class="sig-paren">(</span><em>shape</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/filler.html#AutoFiller.array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.filler.AutoFiller.array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="deeppy.filler.ConstantFiller">
+<em class="property">class </em><code class="descclassname">deeppy.filler.</code><code class="descname">ConstantFiller</code><span class="sig-paren">(</span><em>c=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/filler.html#ConstantFiller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.filler.ConstantFiller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#deeppy.filler.Filler" title="deeppy.filler.Filler"><code class="xref py py-class docutils literal"><span class="pre">deeppy.filler.Filler</span></code></a></p>
+<dl class="method">
+<dt id="deeppy.filler.ConstantFiller.array">
+<code class="descname">array</code><span class="sig-paren">(</span><em>shape</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/filler.html#ConstantFiller.array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.filler.ConstantFiller.array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="deeppy.filler.CopyFiller">
+<em class="property">class </em><code class="descclassname">deeppy.filler.</code><code class="descname">CopyFiller</code><span class="sig-paren">(</span><em>np_array</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/filler.html#CopyFiller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.filler.CopyFiller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#deeppy.filler.Filler" title="deeppy.filler.Filler"><code class="xref py py-class docutils literal"><span class="pre">deeppy.filler.Filler</span></code></a></p>
+<dl class="method">
+<dt id="deeppy.filler.CopyFiller.array">
+<code class="descname">array</code><span class="sig-paren">(</span><em>shape</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/filler.html#CopyFiller.array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.filler.CopyFiller.array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="deeppy.filler.Filler">
+<em class="property">class </em><code class="descclassname">deeppy.filler.</code><code class="descname">Filler</code><a class="reference internal" href="../_modules/deeppy/filler.html#Filler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.filler.Filler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="deeppy.filler.Filler.array">
+<code class="descname">array</code><span class="sig-paren">(</span><em>shape</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/filler.html#Filler.array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.filler.Filler.array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="deeppy.filler.Filler.from_any">
+<em class="property">classmethod </em><code class="descname">from_any</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/filler.html#Filler.from_any"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.filler.Filler.from_any" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="deeppy.filler.NormalFiller">
+<em class="property">class </em><code class="descclassname">deeppy.filler.</code><code class="descname">NormalFiller</code><span class="sig-paren">(</span><em>sigma=1.0</em>, <em>mu=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/filler.html#NormalFiller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.filler.NormalFiller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#deeppy.filler.Filler" title="deeppy.filler.Filler"><code class="xref py py-class docutils literal"><span class="pre">deeppy.filler.Filler</span></code></a></p>
+<dl class="method">
+<dt id="deeppy.filler.NormalFiller.array">
+<code class="descname">array</code><span class="sig-paren">(</span><em>shape</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/filler.html#NormalFiller.array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.filler.NormalFiller.array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="deeppy.filler.UniformFiller">
+<em class="property">class </em><code class="descclassname">deeppy.filler.</code><code class="descname">UniformFiller</code><span class="sig-paren">(</span><em>low</em>, <em>high</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/filler.html#UniformFiller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.filler.UniformFiller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#deeppy.filler.Filler" title="deeppy.filler.Filler"><code class="xref py py-class docutils literal"><span class="pre">deeppy.filler.Filler</span></code></a></p>
+<dl class="method">
+<dt id="deeppy.filler.UniformFiller.array">
+<code class="descname">array</code><span class="sig-paren">(</span><em>shape</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/filler.html#UniformFiller.array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.filler.UniformFiller.array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-deeppy.input">
+<span id="inputs"></span><h2>Inputs<a class="headerlink" href="#module-deeppy.input" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="deeppy.input.Input">
+<em class="property">class </em><code class="descclassname">deeppy.input.</code><code class="descname">Input</code><span class="sig-paren">(</span><em>x</em>, <em>batch_size=128</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/input.html#Input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.input.Input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="deeppy.input.Input.batches">
+<code class="descname">batches</code><span class="sig-paren">(</span><em>phase=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/input.html#Input.batches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.input.Input.batches" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="deeppy.input.Input.from_any">
+<em class="property">classmethod </em><code class="descname">from_any</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/input.html#Input.from_any"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.input.Input.from_any" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="deeppy.input.Input.x_shape">
+<code class="descname">x_shape</code><a class="headerlink" href="#deeppy.input.Input.x_shape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="deeppy.input.SupervisedInput">
+<em class="property">class </em><code class="descclassname">deeppy.input.</code><code class="descname">SupervisedInput</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>batch_size=128</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/input.html#SupervisedInput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.input.SupervisedInput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#deeppy.input.Input" title="deeppy.input.Input"><code class="xref py py-class docutils literal"><span class="pre">deeppy.input.Input</span></code></a></p>
+<dl class="method">
+<dt id="deeppy.input.SupervisedInput.batches">
+<code class="descname">batches</code><span class="sig-paren">(</span><em>phase='train'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/input.html#SupervisedInput.batches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.input.SupervisedInput.batches" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="deeppy.input.SupervisedInput.y_shape">
+<code class="descname">y_shape</code><a class="headerlink" href="#deeppy.input.SupervisedInput.y_shape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-deeppy.parameter">
+<span id="parameters"></span><h2>Parameters<a class="headerlink" href="#module-deeppy.parameter" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="deeppy.parameter.Parameter">
+<em class="property">class </em><code class="descclassname">deeppy.parameter.</code><code class="descname">Parameter</code><span class="sig-paren">(</span><em>fill</em>, <em>name=''</em>, <em>learn_rate=1.0</em>, <em>weight_decay=0.0</em>, <em>monitor=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/parameter.html#Parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.parameter.Parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#deeppy.base.PickleMixin" title="deeppy.base.PickleMixin"><code class="xref py py-class docutils literal"><span class="pre">deeppy.base.PickleMixin</span></code></a></p>
+<dl class="attribute">
+<dt id="deeppy.parameter.Parameter.array">
+<code class="descname">array</code><a class="headerlink" href="#deeppy.parameter.Parameter.array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="deeppy.parameter.Parameter.from_any">
+<em class="property">classmethod </em><code class="descname">from_any</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/parameter.html#Parameter.from_any"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.parameter.Parameter.from_any" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="deeppy.parameter.Parameter.grad">
+<code class="descname">grad</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/parameter.html#Parameter.grad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.parameter.Parameter.grad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a parameter step calculated from the gradient.
+This differs from grad_array() as the parameter may be shared such
+that its gradient has multiple sources.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="deeppy.parameter.Parameter.grad_array">
+<code class="descname">grad_array</code><a class="headerlink" href="#deeppy.parameter.Parameter.grad_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the gradient array.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="deeppy.parameter.Parameter.monitor">
+<code class="descname">monitor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/parameter.html#Parameter.monitor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.parameter.Parameter.monitor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="deeppy.parameter.Parameter.penalty">
+<code class="descname">penalty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/parameter.html#Parameter.penalty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.parameter.Parameter.penalty" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="deeppy.parameter.Parameter.share">
+<code class="descname">share</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/parameter.html#Parameter.share"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.parameter.Parameter.share" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="deeppy.parameter.Parameter.step">
+<code class="descname">step</code><span class="sig-paren">(</span><em>step</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/parameter.html#Parameter.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.parameter.Parameter.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the parameter values according to the given step.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="deeppy.parameter.SharedParameter">
+<em class="property">class </em><code class="descclassname">deeppy.parameter.</code><code class="descname">SharedParameter</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/parameter.html#SharedParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.parameter.SharedParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#deeppy.parameter.Parameter" title="deeppy.parameter.Parameter"><code class="xref py py-class docutils literal"><span class="pre">deeppy.parameter.Parameter</span></code></a></p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">DeepPy</a></h1>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation-guide.html">Installation guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributor-guide.html">Contributor guide</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      
+      
+    </div>
+
+    
+    <a href="https://github.com/andersbll/deeppy" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
