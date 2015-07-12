@@ -44,20 +44,20 @@
   <div class="section" id="profile-network">
 <span id="example-profile-net-py"></span><h1>Profile network<a class="headerlink" href="#profile-network" title="Permalink to this headline">¶</a></h1>
 <p class="horizontal"><strong>Script output</strong>:</p>
-<div class="highlight-python"><div class="highlight"><pre>conv:           fprop(): 0.001879 s      bprop(): 0.003813 s
-act_relu:       fprop(): 0.000358 s      bprop(): 0.000549 s
-pool:           fprop(): 0.000520 s      bprop(): 0.000759 s
-conv:           fprop(): 0.002540 s      bprop(): 0.008044 s
-act_relu:       fprop(): 0.000229 s      bprop(): 0.000286 s
-pool:           fprop(): 0.000195 s      bprop(): 0.000358 s
-conv:           fprop(): 0.001326 s      bprop(): 0.003928 s
-act_relu:       fprop(): 0.000190 s      bprop(): 0.000232 s
-pool:           fprop(): 0.000154 s      bprop(): 0.000295 s
-flatten:        fprop(): 0.000030 s      bprop(): 0.000018 s
-fc_drop:        fprop(): 0.000215 s      bprop(): 0.000272 s
-act_relu:       fprop(): 0.000028 s      bprop(): 0.000049 s
-total_duration: 0.026268 s
-net._bprop(): 0.025920 s
+<div class="highlight-python"><div class="highlight"><pre>conv:           fprop(): 0.001874 s      bprop(): 0.003859 s
+act_relu:       fprop(): 0.000386 s      bprop(): 0.000552 s
+pool:           fprop(): 0.000520 s      bprop(): 0.000711 s
+conv:           fprop(): 0.002633 s      bprop(): 0.008044 s
+act_relu:       fprop(): 0.000235 s      bprop(): 0.000288 s
+pool:           fprop(): 0.000196 s      bprop(): 0.000359 s
+conv:           fprop(): 0.001333 s      bprop(): 0.003924 s
+act_relu:       fprop(): 0.000190 s      bprop(): 0.000228 s
+pool:           fprop(): 0.000156 s      bprop(): 0.000292 s
+flatten:        fprop(): 0.000029 s      bprop(): 0.000017 s
+fc_drop:        fprop(): 0.000217 s      bprop(): 0.000272 s
+act_relu:       fprop(): 0.000028 s      bprop(): 0.000050 s
+total_duration: 0.026394 s
+net._bprop(): 0.026110 s
 </pre></div>
 </div>
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/profile_net.py"><code class="xref download docutils literal"><span class="pre">profile_net.py</span></code></a></p>
@@ -148,13 +148,13 @@ net._bprop(): 0.025920 s
             <span class="n">weights</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">AutoFiller</span><span class="p">(</span><span class="n">gain</span><span class="o">=</span><span class="mf">1.25</span><span class="p">)),</span>
         <span class="p">)</span>
     <span class="p">],</span>
-    <span class="n">loss</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">MultinomialLogReg</span><span class="p">(),</span>
+    <span class="n">loss</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">SoftmaxCrossEntropy</span><span class="p">(),</span>
 <span class="p">)</span>
 
 <span class="n">profile</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">train_input</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  0 minutes  3.1 seconds</p>
+<p><strong>Total running time of the example:</strong>  0 minutes  3.2 seconds</p>
 </div>
 
 

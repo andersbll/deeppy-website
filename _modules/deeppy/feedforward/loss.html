@@ -40,56 +40,57 @@
           <div class="body" role="main">
             
   <h1>Source code for deeppy.feedforward.loss</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">cudarray</span> <span class="kn">as</span> <span class="nn">ca</span>
 <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">PickleMixin</span>
 
 
+<span class="n">_flt_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">ca</span><span class="o">.</span><span class="n">float_</span><span class="p">)</span><span class="o">.</span><span class="n">tiny</span>
+
+
 <div class="viewcode-block" id="Loss"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.Loss">[docs]</a><span class="k">class</span> <span class="nc">Loss</span><span class="p">(</span><span class="n">PickleMixin</span><span class="p">):</span>
     <span class="c"># abll: I suspect that this interface is not ideal. It would be more</span>
-    <span class="c"># elegant if Loss only provided loss() and grad(). However,</span>
-    <span class="c">#</span>
-    <span class="c"># - Some loss functions benefit from adding extra functionality.</span>
-    <span class="c">#   E.g. MultinomialLogReg that incorporates the softmax operation to</span>
-    <span class="c">#   allow for a simple and stable gradient expression.</span>
-    <span class="c">#</span>
-    <span class="c"># - Where should we place the logic from predict()?</span>
+    <span class="c"># elegant if Loss only provided loss() and grad(). However, where should</span>
+    <span class="c"># we place the logic from fprop()?</span>
 
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="Loss.from_any"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.Loss.from_any">[docs]</a>    <span class="k">def</span> <span class="nf">from_any</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">Loss</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">arg</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">arg</span> <span class="o">==</span> <span class="s">&#39;logreg&#39;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">MultinomialLogReg</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="n">arg</span> <span class="o">==</span> <span class="s">&#39;mse&#39;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">MeanSquaredError</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">arg</span> <span class="o">==</span> <span class="s">&#39;softmaxce&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">SoftmaxCrossEntropy</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">arg</span> <span class="o">==</span> <span class="s">&#39;bce&#39;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">BinaryCrossEntropy</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">arg</span> <span class="o">==</span> <span class="s">&#39;mse&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">MeanSquaredError</span><span class="p">()</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Invalid constructor arguments: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">arg</span><span class="p">)</span>
 </div>
     <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">):</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="Loss.predict"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.Loss.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="Loss.fprop"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.Loss.fprop">[docs]</a>    <span class="k">def</span> <span class="nf">fprop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">x</span>
 </div>
 <div class="viewcode-block" id="Loss.loss"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.Loss.loss">[docs]</a>    <span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the loss calculated from the target and the prediction. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Returns the loss calculated from the target and the input. &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="Loss.grad"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.Loss.grad">[docs]</a>    <span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the input gradient calculated from the target and the</span>
-<span class="sd">        prediction. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Returns the input gradient. &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="Loss.y_shape"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.Loss.y_shape">[docs]</a>    <span class="k">def</span> <span class="nf">y_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">x_shape</span>
 
 </div></div>
-<div class="viewcode-block" id="MultinomialLogReg"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.MultinomialLogReg">[docs]</a><span class="k">class</span> <span class="nc">MultinomialLogReg</span><span class="p">(</span><span class="n">Loss</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Multinomial logistic regression with a cross-entropy loss function. &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="SoftmaxCrossEntropy"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.SoftmaxCrossEntropy">[docs]</a><span class="k">class</span> <span class="nc">SoftmaxCrossEntropy</span><span class="p">(</span><span class="n">Loss</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Softmax + cross entropy (aka. multinomial logistic loss)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;logreg&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;softmaxce&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_last_x</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_last_y</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_last_target</span> <span class="o">=</span> <span class="bp">None</span>
@@ -99,33 +100,48 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span> <span class="o">=</span> <span class="n">x_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_softmax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c"># caching wrapper</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_last_x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">x</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_last_y</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">nnet</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_last_x</span> <span class="o">=</span> <span class="n">x</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_last_y</span>
 
     <span class="k">def</span> <span class="nf">_one_hot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="c"># caching wrapper</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_last_target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">target</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_target_one_hot</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">nnet</span><span class="o">.</span><span class="n">one_hot_encode</span><span class="p">(</span><span class="n">target</span><span class="p">,</span>
                                                           <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_last_target</span> <span class="o">=</span> <span class="n">target</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_one_hot</span>
 
-<div class="viewcode-block" id="MultinomialLogReg.predict"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.MultinomialLogReg.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="SoftmaxCrossEntropy.fprop"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.SoftmaxCrossEntropy.fprop">[docs]</a>    <span class="k">def</span> <span class="nf">fprop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ca</span><span class="o">.</span><span class="n">nnet</span><span class="o">.</span><span class="n">one_hot_decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_softmax</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="MultinomialLogReg.loss"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.MultinomialLogReg.loss">[docs]</a>    <span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="SoftmaxCrossEntropy.loss"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.SoftmaxCrossEntropy.loss">[docs]</a>    <span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_softmax</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_one_hot</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ca</span><span class="o">.</span><span class="n">nnet</span><span class="o">.</span><span class="n">categorical_cross_entropy</span><span class="p">(</span><span class="n">y_pred</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">y_true</span><span class="o">=</span><span class="n">target</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="MultinomialLogReg.grad"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.MultinomialLogReg.grad">[docs]</a>    <span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="SoftmaxCrossEntropy.grad"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.SoftmaxCrossEntropy.grad">[docs]</a>    <span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_softmax</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_one_hot</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
         <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">target</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="MultinomialLogReg.y_shape"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.MultinomialLogReg.y_shape">[docs]</a>    <span class="k">def</span> <span class="nf">y_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">):</span>
+<div class="viewcode-block" id="SoftmaxCrossEntropy.y_shape"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.SoftmaxCrossEntropy.y_shape">[docs]</a>    <span class="k">def</span> <span class="nf">y_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">x_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],)</span>
+
+</div></div>
+<div class="viewcode-block" id="BinaryCrossEntropy"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.BinaryCrossEntropy">[docs]</a><span class="k">class</span> <span class="nc">BinaryCrossEntropy</span><span class="p">(</span><span class="n">Loss</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;bce&#39;</span>
+
+<div class="viewcode-block" id="BinaryCrossEntropy.loss"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.BinaryCrossEntropy.loss">[docs]</a>    <span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">_flt_min</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">ca</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="o">*</span><span class="n">ca</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">y_pred</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span><span class="o">*</span><span class="n">ca</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">y_pred</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="BinaryCrossEntropy.grad"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.BinaryCrossEntropy.grad">[docs]</a>    <span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">_flt_min</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">y_pred</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">y</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">y_pred</span><span class="p">))</span>
 
 </div></div>
 <div class="viewcode-block" id="MeanSquaredError"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.MeanSquaredError">[docs]</a><span class="k">class</span> <span class="nc">MeanSquaredError</span><span class="p">(</span><span class="n">Loss</span><span class="p">):</span>
@@ -135,24 +151,11 @@
     <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_targets</span> <span class="o">=</span> <span class="n">x_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
-<div class="viewcode-block" id="MeanSquaredError.grad"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.MeanSquaredError.grad">[docs]</a>    <span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
-        <span class="k">return</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_targets</span> <span class="o">*</span> <span class="p">(</span><span class="n">y_pred</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span>
-</div>
 <div class="viewcode-block" id="MeanSquaredError.loss"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.MeanSquaredError.loss">[docs]</a>    <span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ca</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">y</span><span class="o">-</span><span class="n">y_pred</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-</div></div>
-<div class="viewcode-block" id="BinaryCrossEntropy"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.BinaryCrossEntropy">[docs]</a><span class="k">class</span> <span class="nc">BinaryCrossEntropy</span><span class="p">(</span><span class="n">Loss</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;bce&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="n">eps</span>
-
-<div class="viewcode-block" id="BinaryCrossEntropy.grad"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.BinaryCrossEntropy.grad">[docs]</a>    <span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
-        <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="p">(</span><span class="n">y_pred</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">y</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">y_pred</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="BinaryCrossEntropy.loss"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.BinaryCrossEntropy.loss">[docs]</a>    <span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ca</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="o">-</span><span class="n">ca</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y</span><span class="o">*</span><span class="n">ca</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">y_pred</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span> <span class="o">+</span>
-                               <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">ca</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">y_pred</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span></div></div>
+<div class="viewcode-block" id="MeanSquaredError.grad"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.loss.MeanSquaredError.grad">[docs]</a>    <span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_targets</span> <span class="o">*</span> <span class="p">(</span><span class="n">y_pred</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>

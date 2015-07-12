@@ -15,20 +15,20 @@ Profile network
 
 **Script output**::
 
-  conv:           fprop(): 0.001879 s      bprop(): 0.003813 s
-  act_relu:       fprop(): 0.000358 s      bprop(): 0.000549 s
-  pool:           fprop(): 0.000520 s      bprop(): 0.000759 s
-  conv:           fprop(): 0.002540 s      bprop(): 0.008044 s
-  act_relu:       fprop(): 0.000229 s      bprop(): 0.000286 s
-  pool:           fprop(): 0.000195 s      bprop(): 0.000358 s
-  conv:           fprop(): 0.001326 s      bprop(): 0.003928 s
-  act_relu:       fprop(): 0.000190 s      bprop(): 0.000232 s
-  pool:           fprop(): 0.000154 s      bprop(): 0.000295 s
-  flatten:        fprop(): 0.000030 s      bprop(): 0.000018 s
-  fc_drop:        fprop(): 0.000215 s      bprop(): 0.000272 s
-  act_relu:       fprop(): 0.000028 s      bprop(): 0.000049 s
-  total_duration: 0.026268 s
-  net._bprop(): 0.025920 s
+  conv:           fprop(): 0.001874 s      bprop(): 0.003859 s
+  act_relu:       fprop(): 0.000386 s      bprop(): 0.000552 s
+  pool:           fprop(): 0.000520 s      bprop(): 0.000711 s
+  conv:           fprop(): 0.002633 s      bprop(): 0.008044 s
+  act_relu:       fprop(): 0.000235 s      bprop(): 0.000288 s
+  pool:           fprop(): 0.000196 s      bprop(): 0.000359 s
+  conv:           fprop(): 0.001333 s      bprop(): 0.003924 s
+  act_relu:       fprop(): 0.000190 s      bprop(): 0.000228 s
+  pool:           fprop(): 0.000156 s      bprop(): 0.000292 s
+  flatten:        fprop(): 0.000029 s      bprop(): 0.000017 s
+  fc_drop:        fprop(): 0.000217 s      bprop(): 0.000272 s
+  act_relu:       fprop(): 0.000028 s      bprop(): 0.000050 s
+  total_duration: 0.026394 s
+  net._bprop(): 0.026110 s
 
 
 
@@ -37,5 +37,5 @@ Profile network
 .. literalinclude:: profile_net.py
     :lines: 8-
 
-**Total running time of the example:**  0 minutes  3.1 seconds
+**Total running time of the example:**  0 minutes  3.2 seconds
     

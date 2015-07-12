@@ -46,7 +46,7 @@
 <a class="horizontal reference internal image-reference" href="../_images/autoencoders_mnist_001.png"><img alt="../_images/autoencoders_mnist_001.png" class="horizontal" src="../_images/autoencoders_mnist_001.png" style="width: 320.0px; height: 240.0px;" /></a>
 <a class="horizontal reference internal image-reference" href="../_images/autoencoders_mnist_002.png"><img alt="../_images/autoencoders_mnist_002.png" class="horizontal" src="../_images/autoencoders_mnist_002.png" style="width: 320.0px; height: 240.0px;" /></a>
 <p><strong>Script output</strong>:</p>
-<div class="highlight-python"><div class="highlight"><pre>Test error rate: 0.0153
+<div class="highlight-python"><div class="highlight"><pre>Test error rate: 0.0146
 </pre></div>
 </div>
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/autoencoders_mnist.py"><code class="xref download docutils literal"><span class="pre">autoencoders_mnist.py</span></code></a></p>
@@ -94,7 +94,7 @@
 
 <span class="c"># Train autoencoders layer-wise</span>
 <span class="n">trainer</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">StochasticGradientDescent</span><span class="p">(</span>
-    <span class="n">min_epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">learn_rule</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Momentum</span><span class="p">(</span><span class="n">learn_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">),</span>
+    <span class="n">min_epochs</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">learn_rule</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Momentum</span><span class="p">(</span><span class="n">learn_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="k">for</span> <span class="n">ae</span> <span class="ow">in</span> <span class="n">sae</span><span class="o">.</span><span class="n">ae_models</span><span class="p">():</span>
     <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">ae</span><span class="p">,</span> <span class="n">train_input</span><span class="p">)</span>
@@ -110,14 +110,14 @@
             <span class="n">weights</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">AutoFiller</span><span class="p">()),</span>
         <span class="p">),</span>
     <span class="p">],</span>
-    <span class="n">loss</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">MultinomialLogReg</span><span class="p">(),</span>
+    <span class="n">loss</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">SoftmaxCrossEntropy</span><span class="p">(),</span>
 <span class="p">)</span>
 
 <span class="c"># Fine-tune neural network</span>
 <span class="n">train_input</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">SupervisedInput</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
 <span class="n">test_input</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">SupervisedInput</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
 <span class="n">trainer</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">StochasticGradientDescent</span><span class="p">(</span>
-    <span class="n">max_epochs</span><span class="o">=</span><span class="mi">75</span><span class="p">,</span> <span class="n">learn_rule</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Momentum</span><span class="p">(</span><span class="n">learn_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">),</span>
+    <span class="n">max_epochs</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">learn_rule</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Momentum</span><span class="p">(</span><span class="n">learn_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">train_input</span><span class="p">)</span>
 
@@ -147,7 +147,7 @@
          <span class="s">&#39;Fine-tuned features&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  10 minutes  33.1 seconds</p>
+<p><strong>Total running time of the example:</strong>  5 minutes  4.7 seconds</p>
 </div>
 
 

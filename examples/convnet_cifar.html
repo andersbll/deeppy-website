@@ -46,7 +46,7 @@
 <a class="horizontal reference internal image-reference" href="../_images/convnet_cifar_001.png"><img alt="../_images/convnet_cifar_001.png" class="horizontal" src="../_images/convnet_cifar_001.png" style="width: 320.0px; height: 240.0px;" /></a>
 <a class="horizontal reference internal image-reference" href="../_images/convnet_cifar_002.png"><img alt="../_images/convnet_cifar_002.png" class="horizontal" src="../_images/convnet_cifar_002.png" style="width: 320.0px; height: 240.0px;" /></a>
 <p><strong>Script output</strong>:</p>
-<div class="highlight-python"><div class="highlight"><pre>Test error rate: 0.3108
+<div class="highlight-python"><div class="highlight"><pre>Test error rate: 0.3035
 </pre></div>
 </div>
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/convnet_cifar.py"><code class="xref download docutils literal"><span class="pre">convnet_cifar.py</span></code></a></p>
@@ -110,7 +110,7 @@
             <span class="n">weights</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">AutoFiller</span><span class="p">(</span><span class="n">gain</span><span class="o">=</span><span class="mf">1.25</span><span class="p">)),</span>
         <span class="p">)</span>
     <span class="p">],</span>
-    <span class="n">loss</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">MultinomialLogReg</span><span class="p">(),</span>
+    <span class="n">loss</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">SoftmaxCrossEntropy</span><span class="p">(),</span>
 <span class="p">)</span>
 
 
@@ -162,7 +162,7 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  3 minutes  19.3 seconds</p>
+<p><strong>Total running time of the example:</strong>  3 minutes  20.4 seconds</p>
 </div>
 
 

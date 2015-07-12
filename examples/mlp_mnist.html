@@ -46,7 +46,7 @@
 <a class="horizontal reference internal image-reference" href="../_images/mlp_mnist_001.png"><img alt="../_images/mlp_mnist_001.png" class="horizontal" src="../_images/mlp_mnist_001.png" style="width: 320.0px; height: 240.0px;" /></a>
 <a class="horizontal reference internal image-reference" href="../_images/mlp_mnist_002.png"><img alt="../_images/mlp_mnist_002.png" class="horizontal" src="../_images/mlp_mnist_002.png" style="width: 320.0px; height: 240.0px;" /></a>
 <p><strong>Script output</strong>:</p>
-<div class="highlight-python"><div class="highlight"><pre>Test error rate: 0.0133
+<div class="highlight-python"><div class="highlight"><pre>Test error rate: 0.0137
 </pre></div>
 </div>
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/mlp_mnist.py"><code class="xref download docutils literal"><span class="pre">mlp_mnist.py</span></code></a></p>
@@ -91,7 +91,7 @@
             <span class="n">weights</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">AutoFiller</span><span class="p">()),</span>
         <span class="p">),</span>
     <span class="p">],</span>
-    <span class="n">loss</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">MultinomialLogReg</span><span class="p">(),</span>
+    <span class="n">loss</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">SoftmaxCrossEntropy</span><span class="p">(),</span>
 <span class="p">)</span>
 
 <span class="c"># Train network</span>
@@ -129,7 +129,7 @@
          <span class="s">&#39;Examples of features learned&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  1 minutes  52.6 seconds</p>
+<p><strong>Total running time of the example:</strong>  1 minutes  52.8 seconds</p>
 </div>
 
 

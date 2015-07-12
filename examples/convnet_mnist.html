@@ -111,7 +111,7 @@
             <span class="n">weights</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">AutoFiller</span><span class="p">(</span><span class="n">weight_gain_fc</span><span class="p">)),</span>
         <span class="p">),</span>
     <span class="p">],</span>
-    <span class="n">loss</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">MultinomialLogReg</span><span class="p">(),</span>
+    <span class="n">loss</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">SoftmaxCrossEntropy</span><span class="p">(),</span>
 <span class="p">)</span>
 
 <span class="c"># Train network</span>
@@ -155,7 +155,7 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  4 minutes  48.9 seconds</p>
+<p><strong>Total running time of the example:</strong>  4 minutes  58.2 seconds</p>
 </div>
 
 

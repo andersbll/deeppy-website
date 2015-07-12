@@ -21,7 +21,7 @@ Autoencoder pretraining of neural networks
 
 **Script output**::
 
-  Test error rate: 0.0153
+  Test error rate: 0.0146
 
 
 
@@ -30,5 +30,5 @@ Autoencoder pretraining of neural networks
 .. literalinclude:: autoencoders_mnist.py
     :lines: 8-
 
-**Total running time of the example:**  10 minutes  33.1 seconds
+**Total running time of the example:**  5 minutes  4.7 seconds
     
