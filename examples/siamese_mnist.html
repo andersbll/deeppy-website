@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Siamese networks &mdash; DeepPy 0.1.dev0 documentation</title>
+    <title>Siamese networks &mdash; DeepPy 0.1.dev documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.dev0',
+        VERSION:     '0.1.dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="DeepPy 0.1.dev0 documentation" href="../index.html" />
+    <link rel="top" title="DeepPy 0.1.dev documentation" href="../index.html" />
     <link rel="up" title="Examples" href="index.html" />
     <link rel="next" title="Profile network" href="profile_net.html" />
     <link rel="prev" title="Autoencoder pretraining of neural networks" href="autoencoders_mnist.html" />
@@ -46,10 +46,10 @@
 <img alt="../_images/siamese_mnist_001.png" class="align-center" src="../_images/siamese_mnist_001.png" />
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/siamese_mnist.py"><code class="xref download docutils literal"><span class="pre">siamese_mnist.py</span></code></a></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">offsetbox</span>
 <span class="kn">import</span> <span class="nn">deeppy</span> <span class="kn">as</span> <span class="nn">dp</span>
-
 
 <span class="c"># Fetch MNIST data</span>
 <span class="n">dataset</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">MNIST</span><span class="p">()</span>
@@ -82,50 +82,64 @@
 
 <span class="c"># Prepare network inputs</span>
 <span class="n">train_input</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">SupervisedSiameseInput</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
-<span class="n">test_input</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">SupervisedInput</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
 
 <span class="c"># Setup network</span>
+<span class="n">w_gain</span> <span class="o">=</span> <span class="mf">1.5</span>
+<span class="n">w_decay</span> <span class="o">=</span> <span class="mf">1e-4</span>
 <span class="n">net</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">SiameseNetwork</span><span class="p">(</span>
     <span class="n">siamese_layers</span><span class="o">=</span><span class="p">[</span>
-        <span class="n">dp</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(),</span>
         <span class="n">dp</span><span class="o">.</span><span class="n">FullyConnected</span><span class="p">(</span>
-            <span class="n">n_out</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
-            <span class="n">weights</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">AutoFiller</span><span class="p">(),</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">),</span>
+            <span class="n">n_out</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+            <span class="n">weights</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">AutoFiller</span><span class="p">(</span><span class="n">w_gain</span><span class="p">),</span> <span class="n">weight_decay</span><span class="o">=</span><span class="n">w_decay</span><span class="p">),</span>
         <span class="p">),</span>
         <span class="n">dp</span><span class="o">.</span><span class="n">Activation</span><span class="p">(</span><span class="s">&#39;relu&#39;</span><span class="p">),</span>
         <span class="n">dp</span><span class="o">.</span><span class="n">FullyConnected</span><span class="p">(</span>
-            <span class="n">n_out</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
-            <span class="n">weights</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">AutoFiller</span><span class="p">(),</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">),</span>
+            <span class="n">n_out</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+            <span class="n">weights</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">AutoFiller</span><span class="p">(</span><span class="n">w_gain</span><span class="p">),</span> <span class="n">weight_decay</span><span class="o">=</span><span class="n">w_decay</span><span class="p">),</span>
         <span class="p">),</span>
         <span class="n">dp</span><span class="o">.</span><span class="n">Activation</span><span class="p">(</span><span class="s">&#39;relu&#39;</span><span class="p">),</span>
         <span class="n">dp</span><span class="o">.</span><span class="n">FullyConnected</span><span class="p">(</span>
             <span class="n">n_out</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-            <span class="n">weights</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">AutoFiller</span><span class="p">(),</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">),</span>
+            <span class="n">weights</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">AutoFiller</span><span class="p">(</span><span class="n">w_gain</span><span class="p">)),</span>
         <span class="p">),</span>
     <span class="p">],</span>
-    <span class="n">loss</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">ContrastiveLoss</span><span class="p">(</span><span class="n">margin</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
+    <span class="n">loss</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">ContrastiveLoss</span><span class="p">(</span><span class="n">margin</span><span class="o">=</span><span class="mf">1.0</span><span class="p">),</span>
 <span class="p">)</span>
 
 <span class="c"># Train network</span>
 <span class="n">trainer</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">StochasticGradientDescent</span><span class="p">(</span>
-    <span class="n">max_epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-    <span class="n">learn_rule</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">RMSProp</span><span class="p">(</span><span class="n">learn_rate</span><span class="o">=</span><span class="mf">0.001</span><span class="p">),</span>
+    <span class="n">max_epochs</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+    <span class="n">learn_rule</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">RMSProp</span><span class="p">(</span><span class="n">learn_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">train_input</span><span class="p">)</span>
 
-<span class="c"># Plot feature in 2D space</span>
+<span class="c"># Plot 2D embedding</span>
+<span class="n">test_input</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+<span class="n">x_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,)</span> <span class="o">+</span> <span class="n">dataset</span><span class="o">.</span><span class="n">img_shape</span><span class="p">)</span>
 <span class="n">feat</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">features</span><span class="p">(</span><span class="n">test_input</span><span class="p">)</span>
-<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;tomato&#39;</span><span class="p">,</span> <span class="s">&#39;lawngreen&#39;</span><span class="p">,</span> <span class="s">&#39;royalblue&#39;</span><span class="p">,</span> <span class="s">&#39;gold&#39;</span><span class="p">,</span> <span class="s">&#39;saddlebrown&#39;</span><span class="p">,</span>
-          <span class="s">&#39;violet&#39;</span><span class="p">,</span> <span class="s">&#39;turquoise&#39;</span><span class="p">,</span> <span class="s">&#39;mediumpurple&#39;</span><span class="p">,</span> <span class="s">&#39;darkorange&#39;</span><span class="p">,</span> <span class="s">&#39;darkgray&#39;</span><span class="p">]</span>
+<span class="n">feat</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">feat</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">feat</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">feat</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">feat</span><span class="p">[</span><span class="n">y_test</span> <span class="o">==</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">feat</span><span class="p">[</span><span class="n">y_test</span> <span class="o">==</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-                <span class="n">c</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">linewidths</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)],</span> <span class="n">scatterpoints</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">markerscale</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">shown_images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]])</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">feat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">feat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">shown_images</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">6e-4</span><span class="p">:</span>
+        <span class="c"># don&#39;t show points that are too close</span>
+        <span class="k">continue</span>
+    <span class="n">shown_images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">shown_images</span><span class="p">,</span> <span class="p">[</span><span class="n">feat</span><span class="p">[</span><span class="n">i</span><span class="p">]]]</span>
+    <span class="n">imagebox</span> <span class="o">=</span> <span class="n">offsetbox</span><span class="o">.</span><span class="n">AnnotationBbox</span><span class="p">(</span>
+        <span class="n">offsetbox</span><span class="o">.</span><span class="n">OffsetImage</span><span class="p">(</span><span class="n">x_test</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">zoom</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">gray_r</span><span class="p">),</span>
+        <span class="n">xy</span><span class="o">=</span><span class="n">feat</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">frameon</span><span class="o">=</span><span class="bp">False</span>
+    <span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">imagebox</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([]),</span> <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">([])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Embedding from the last layer of the network&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  1 minutes  12.4 seconds</p>
+<p><strong>Total running time of the example:</strong>  1 minutes  41.4 seconds</p>
 </div>
 
 

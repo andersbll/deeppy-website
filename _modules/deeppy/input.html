@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>deeppy.input &mdash; DeepPy 0.1.dev0 documentation</title>
+    <title>deeppy.input &mdash; DeepPy 0.1.dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.dev0',
+        VERSION:     '0.1.dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="DeepPy 0.1.dev0 documentation" href="../../index.html" />
+    <link rel="top" title="DeepPy 0.1.dev documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" />
    
   
@@ -67,13 +67,18 @@
             <span class="n">batch_stop</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">batch_start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
             <span class="k">yield</span> <span class="n">batch_start</span><span class="p">,</span> <span class="n">batch_stop</span>
 
-<div class="viewcode-block" id="Input.batches"><a class="viewcode-back" href="../../api-reference/index.html#deeppy.input.Input.batches">[docs]</a>    <span class="k">def</span> <span class="nf">batches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="Input.batches"><a class="viewcode-back" href="../../api-reference/index.html#deeppy.input.Input.batches">[docs]</a>    <span class="k">def</span> <span class="nf">batches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">batch_start</span><span class="p">,</span> <span class="n">batch_stop</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_slices</span><span class="p">():</span>
-            <span class="k">yield</span> <span class="n">ca</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">batch_start</span><span class="p">:</span><span class="n">batch_stop</span><span class="p">])</span>
+            <span class="n">x_batch</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">batch_start</span><span class="p">:</span><span class="n">batch_stop</span><span class="p">])</span>
+            <span class="k">yield</span> <span class="p">{</span><span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="n">x_batch</span><span class="p">}</span>
 </div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">x_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s">&#39;x_shape&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_shape</span><span class="p">}</span>
 
 </div>
 <div class="viewcode-block" id="SupervisedInput"><a class="viewcode-back" href="../../api-reference/index.html#deeppy.input.SupervisedInput">[docs]</a><span class="k">class</span> <span class="nc">SupervisedInput</span><span class="p">(</span><span class="n">Input</span><span class="p">):</span>
@@ -83,19 +88,19 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;shape mismatch between x and y&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
 
-<div class="viewcode-block" id="SupervisedInput.batches"><a class="viewcode-back" href="../../api-reference/index.html#deeppy.input.SupervisedInput.batches">[docs]</a>    <span class="k">def</span> <span class="nf">batches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="s">&#39;train&#39;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">phase</span> <span class="o">==</span> <span class="s">&#39;train&#39;</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">batch_start</span><span class="p">,</span> <span class="n">batch_stop</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_slices</span><span class="p">():</span>
-                <span class="n">x_batch</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">batch_start</span><span class="p">:</span><span class="n">batch_stop</span><span class="p">])</span>
-                <span class="n">y_batch</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">batch_start</span><span class="p">:</span><span class="n">batch_stop</span><span class="p">])</span>
-                <span class="k">yield</span> <span class="n">x_batch</span><span class="p">,</span> <span class="n">y_batch</span>
-        <span class="k">elif</span> <span class="n">phase</span> <span class="o">==</span> <span class="s">&#39;test&#39;</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">super</span><span class="p">(</span><span class="n">SupervisedInput</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">batches</span><span class="p">():</span>
-                <span class="k">yield</span> <span class="n">x</span>
+<div class="viewcode-block" id="SupervisedInput.batches"><a class="viewcode-back" href="../../api-reference/index.html#deeppy.input.SupervisedInput.batches">[docs]</a>    <span class="k">def</span> <span class="nf">batches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">batch_start</span><span class="p">,</span> <span class="n">batch_stop</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_slices</span><span class="p">():</span>
+            <span class="n">x_batch</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">batch_start</span><span class="p">:</span><span class="n">batch_stop</span><span class="p">])</span>
+            <span class="n">y_batch</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">batch_start</span><span class="p">:</span><span class="n">batch_stop</span><span class="p">])</span>
+            <span class="k">yield</span> <span class="p">{</span><span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="n">x_batch</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">:</span> <span class="n">y_batch</span><span class="p">}</span>
 </div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">y_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s">&#39;x_shape&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_shape</span><span class="p">,</span> <span class="s">&#39;y_shape&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_shape</span><span class="p">}</span></div>
 </pre></div>
 
           </div>

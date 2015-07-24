@@ -21,7 +21,7 @@ Convnets for image classification (2)
 
 **Script output**::
 
-  Test error rate: 0.3035
+  Test error rate: 0.2966
 
 
 
@@ -30,5 +30,5 @@ Convnets for image classification (2)
 .. literalinclude:: convnet_cifar.py
     :lines: 8-
 
-**Total running time of the example:**  3 minutes  20.4 seconds
+**Total running time of the example:**  2 minutes  42.4 seconds
     

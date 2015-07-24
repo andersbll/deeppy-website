@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>API reference, deeppy.autoencoder &mdash; DeepPy 0.1.dev0 documentation</title>
+    <title>API reference, deeppy.autoencoder &mdash; DeepPy 0.1.dev documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.dev0',
+        VERSION:     '0.1.dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="DeepPy 0.1.dev0 documentation" href="../index.html" />
+    <link rel="top" title="DeepPy 0.1.dev documentation" href="../index.html" />
     <link rel="up" title="API reference" href="index.html" />
     <link rel="next" title="API reference, deeppy.feedforward" href="feedforward.html" />
     <link rel="prev" title="API reference" href="index.html" />
@@ -45,7 +45,7 @@
 <span id="api-reference-deeppy-autoencoder"></span><span id="api-autoencoder"></span><h1>API reference, deeppy.autoencoder<a class="headerlink" href="#module-deeppy.autoencoder.autoencoder" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="deeppy.autoencoder.autoencoder.Autoencoder">
-<em class="property">class </em><code class="descclassname">deeppy.autoencoder.autoencoder.</code><code class="descname">Autoencoder</code><span class="sig-paren">(</span><em>n_out</em>, <em>weights</em>, <em>bias=0.0</em>, <em>activation='sigmoid'</em>, <em>loss='bce'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/autoencoder/autoencoder.html#Autoencoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.autoencoder.autoencoder.Autoencoder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">deeppy.autoencoder.autoencoder.</code><code class="descname">Autoencoder</code><span class="sig-paren">(</span><em>n_out</em>, <em>weights</em>, <em>bias=0.0</em>, <em>bias_prime=0.0</em>, <em>activation='sigmoid'</em>, <em>loss='bce'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/autoencoder/autoencoder.html#Autoencoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.autoencoder.autoencoder.Autoencoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="index.html#deeppy.base.Model" title="deeppy.base.Model"><code class="xref py py-class docutils literal"><span class="pre">deeppy.base.Model</span></code></a>, <a class="reference internal" href="index.html#deeppy.base.PickleMixin" title="deeppy.base.PickleMixin"><code class="xref py py-class docutils literal"><span class="pre">deeppy.base.PickleMixin</span></code></a></p>
 <dl class="method">
 <dt id="deeppy.autoencoder.autoencoder.Autoencoder.decode">
@@ -93,7 +93,7 @@
 
 <dl class="class">
 <dt id="deeppy.autoencoder.autoencoder.DenoisingAutoencoder">
-<em class="property">class </em><code class="descclassname">deeppy.autoencoder.autoencoder.</code><code class="descname">DenoisingAutoencoder</code><span class="sig-paren">(</span><em>n_out</em>, <em>weights</em>, <em>bias=0.0</em>, <em>activation='sigmoid'</em>, <em>loss='bce'</em>, <em>corruption=0.25</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/autoencoder/autoencoder.html#DenoisingAutoencoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.autoencoder.autoencoder.DenoisingAutoencoder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">deeppy.autoencoder.autoencoder.</code><code class="descname">DenoisingAutoencoder</code><span class="sig-paren">(</span><em>n_out</em>, <em>weights</em>, <em>bias=0.0</em>, <em>bias_prime=0.0</em>, <em>corruption=0.25</em>, <em>activation='sigmoid'</em>, <em>loss='bce'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/autoencoder/autoencoder.html#DenoisingAutoencoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.autoencoder.autoencoder.DenoisingAutoencoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#deeppy.autoencoder.autoencoder.Autoencoder" title="deeppy.autoencoder.autoencoder.Autoencoder"><code class="xref py py-class docutils literal"><span class="pre">deeppy.autoencoder.autoencoder.Autoencoder</span></code></a></p>
 <dl class="method">
 <dt id="deeppy.autoencoder.autoencoder.DenoisingAutoencoder.corrupt">
@@ -103,12 +103,6 @@
 </dd></dl>
 
 <span class="target" id="module-deeppy.autoencoder.stacked_autoencoder"></span><dl class="class">
-<dt id="deeppy.autoencoder.stacked_autoencoder.InputWrap">
-<em class="property">class </em><code class="descclassname">deeppy.autoencoder.stacked_autoencoder.</code><code class="descname">InputWrap</code><span class="sig-paren">(</span><em>input</em>, <em>x_shape</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/autoencoder/stacked_autoencoder.html#InputWrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.autoencoder.stacked_autoencoder.InputWrap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
-</dd></dl>
-
-<dl class="class">
 <dt id="deeppy.autoencoder.stacked_autoencoder.StackedAutoencoder">
 <em class="property">class </em><code class="descclassname">deeppy.autoencoder.stacked_autoencoder.</code><code class="descname">StackedAutoencoder</code><span class="sig-paren">(</span><em>layers</em>, <em>loss='bce'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/autoencoder/stacked_autoencoder.html#StackedAutoencoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.autoencoder.stacked_autoencoder.StackedAutoencoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#deeppy.autoencoder.autoencoder.Autoencoder" title="deeppy.autoencoder.autoencoder.Autoencoder"><code class="xref py py-class docutils literal"><span class="pre">deeppy.autoencoder.autoencoder.Autoencoder</span></code></a></p>

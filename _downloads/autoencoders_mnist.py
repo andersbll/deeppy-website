@@ -50,7 +50,7 @@ sae = dp.StackedAutoencoder(
 
 # Train autoencoders layer-wise
 trainer = dp.StochasticGradientDescent(
-    min_epochs=25, learn_rule=dp.Momentum(learn_rate=0.05, momentum=0.9),
+    max_epochs=25, learn_rule=dp.Momentum(learn_rate=0.05, momentum=0.9),
 )
 for ae in sae.ae_models():
     trainer.train(ae, train_input)
@@ -71,14 +71,14 @@ net = dp.NeuralNetwork(
 
 # Fine-tune neural network
 train_input = dp.SupervisedInput(x_train, y_train, batch_size=batch_size)
-test_input = dp.SupervisedInput(x_test, y_test)
+test_input = dp.Input(x_test)
 trainer = dp.StochasticGradientDescent(
     max_epochs=25, learn_rule=dp.Momentum(learn_rate=0.05, momentum=0.9),
 )
 trainer.train(net, train_input)
 
 # Evaluate on test data
-error = net.error(test_input)
+error = np.mean(net.predict(test_input) != y_test)
 print('Test error rate: %.4f' % error)
 
 
@@ -90,14 +90,14 @@ def plot_img(img, title):
     plt.title(title)
     plt.tight_layout()
 
-W = np.array(sae.layers[0].W.array)
-W = np.reshape(W.T, (-1,) + dataset.img_shape)
-sortidx = np.argsort(np.std(W, axis=(1, 2)))[-64:]
-plot_img(dp.misc.img_tile(dp.misc.img_stretch(W[sortidx])),
+w = np.array(sae.layers[0].weights.array)
+w = np.reshape(w.T, (-1,) + dataset.img_shape)
+sortidx = np.argsort(np.std(w, axis=(1, 2)))[-64:]
+plot_img(dp.misc.img_tile(dp.misc.img_stretch(w[sortidx])),
          'Autoencoder features')
 
 # Plot learned features in first layer
-W = np.array(net.layers[0].W.array)
-W = np.reshape(W.T, (-1,) + dataset.img_shape)
-plot_img(dp.misc.img_tile(dp.misc.img_stretch(W[sortidx])),
+w = np.array(net.layers[0].weights.array)
+w = np.reshape(w.T, (-1,) + dataset.img_shape)
+plot_img(dp.misc.img_tile(dp.misc.img_stretch(w[sortidx])),
          'Fine-tuned features')

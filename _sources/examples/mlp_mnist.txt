@@ -21,7 +21,7 @@ Digit classification
 
 **Script output**::
 
-  Test error rate: 0.0137
+  Test error rate: 0.0145
 
 
 
@@ -30,5 +30,5 @@ Digit classification
 .. literalinclude:: mlp_mnist.py
     :lines: 8-
 
-**Total running time of the example:**  1 minutes  52.8 seconds
+**Total running time of the example:**  1 minutes  55.8 seconds
     

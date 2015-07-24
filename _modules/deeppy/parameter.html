@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>deeppy.parameter &mdash; DeepPy 0.1.dev0 documentation</title>
+    <title>deeppy.parameter &mdash; DeepPy 0.1.dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.dev0',
+        VERSION:     '0.1.dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="DeepPy 0.1.dev0 documentation" href="../../index.html" />
+    <link rel="top" title="DeepPy 0.1.dev documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" />
    
   
@@ -42,12 +42,11 @@
   <h1>Source code for deeppy.parameter</h1><div class="highlight"><pre>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">cudarray</span> <span class="kn">as</span> <span class="nn">ca</span>
-
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
-
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">PickleMixin</span>
 <span class="kn">from</span> <span class="nn">.filler</span> <span class="kn">import</span> <span class="n">Filler</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Parameter"><a class="viewcode-back" href="../../api-reference/index.html#deeppy.parameter.Parameter">[docs]</a><span class="k">class</span> <span class="nc">Parameter</span><span class="p">(</span><span class="n">PickleMixin</span><span class="p">):</span>
@@ -60,7 +59,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">weight_decay</span> <span class="o">=</span> <span class="n">weight_decay</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_array</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_grad_array</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_last_step</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_step</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shares</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="nd">@classmethod</span>
@@ -72,7 +71,14 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Invalid parameter arguments&#39;</span><span class="p">)</span>
 </div>
     <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filler</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_array</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filler</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">shape</span><span class="p">,)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_array</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">shape</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Shape </span><span class="si">%s</span><span class="s"> does not match existing shape </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                                 <span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_array</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -97,7 +103,7 @@
 <div class="viewcode-block" id="Parameter.step"><a class="viewcode-back" href="../../api-reference/index.html#deeppy.parameter.Parameter.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; Update the parameter values according to the given step. &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_last_step</span> <span class="o">=</span> <span class="n">step</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_step</span> <span class="o">=</span> <span class="n">step</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_array</span> <span class="o">+=</span> <span class="n">step</span>
 </div>
 <div class="viewcode-block" id="Parameter.penalty"><a class="viewcode-back" href="../../api-reference/index.html#deeppy.parameter.Parameter.penalty">[docs]</a>    <span class="k">def</span> <span class="nf">penalty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -111,9 +117,9 @@
             <span class="k">return</span>
         <span class="n">val_mean_abs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ca</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ca</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_array</span><span class="p">)))</span>
         <span class="n">grad_mean_abs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ca</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ca</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tmp_grad_array</span><span class="p">)))</span>
-        <span class="n">step_mean_abs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ca</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ca</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tmp_last_step</span><span class="p">)))</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:</span><span class="se">\t</span><span class="si">%.1e</span><span class="s">  [</span><span class="si">%.1e</span><span class="s">, </span><span class="si">%.1e</span><span class="s">]&#39;</span>
-                    <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">val_mean_abs</span><span class="p">,</span> <span class="n">grad_mean_abs</span><span class="p">,</span> <span class="n">step_mean_abs</span><span class="p">))</span>
+        <span class="n">step_mean_abs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ca</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ca</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tmp_step</span><span class="p">)))</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:</span><span class="se">\t</span><span class="si">%.1e</span><span class="s">  [</span><span class="si">%.1e</span><span class="s">, </span><span class="si">%.1e</span><span class="s">]&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">val_mean_abs</span><span class="p">,</span>
+                 <span class="n">grad_mean_abs</span><span class="p">,</span> <span class="n">step_mean_abs</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Parameter.share"><a class="viewcode-back" href="../../api-reference/index.html#deeppy.parameter.Parameter.share">[docs]</a>    <span class="k">def</span> <span class="nf">share</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">param</span> <span class="o">=</span> <span class="n">SharedParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>

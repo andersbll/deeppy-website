@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Profile network &mdash; DeepPy 0.1.dev0 documentation</title>
+    <title>Profile network &mdash; DeepPy 0.1.dev documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.dev0',
+        VERSION:     '0.1.dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="DeepPy 0.1.dev0 documentation" href="../index.html" />
+    <link rel="top" title="DeepPy 0.1.dev documentation" href="../index.html" />
     <link rel="up" title="Examples" href="index.html" />
     <link rel="next" title="API reference" href="../api-reference/index.html" />
     <link rel="prev" title="Siamese networks" href="siamese_mnist.html" />
@@ -44,20 +44,20 @@
   <div class="section" id="profile-network">
 <span id="example-profile-net-py"></span><h1>Profile network<a class="headerlink" href="#profile-network" title="Permalink to this headline">¶</a></h1>
 <p class="horizontal"><strong>Script output</strong>:</p>
-<div class="highlight-python"><div class="highlight"><pre>conv:           fprop(): 0.001874 s      bprop(): 0.003859 s
-act_relu:       fprop(): 0.000386 s      bprop(): 0.000552 s
-pool:           fprop(): 0.000520 s      bprop(): 0.000711 s
-conv:           fprop(): 0.002633 s      bprop(): 0.008044 s
-act_relu:       fprop(): 0.000235 s      bprop(): 0.000288 s
-pool:           fprop(): 0.000196 s      bprop(): 0.000359 s
-conv:           fprop(): 0.001333 s      bprop(): 0.003924 s
-act_relu:       fprop(): 0.000190 s      bprop(): 0.000228 s
-pool:           fprop(): 0.000156 s      bprop(): 0.000292 s
+<div class="highlight-python"><div class="highlight"><pre>conv:           fprop(): 0.002031 s      bprop(): 0.003639 s
+act_relu:       fprop(): 0.000370 s      bprop(): 0.000574 s
+pool:           fprop(): 0.000487 s      bprop(): 0.000712 s
+conv:           fprop(): 0.002509 s      bprop(): 0.008041 s
+act_relu:       fprop(): 0.000229 s      bprop(): 0.000283 s
+pool:           fprop(): 0.000195 s      bprop(): 0.000358 s
+conv:           fprop(): 0.001325 s      bprop(): 0.003920 s
+act_relu:       fprop(): 0.000187 s      bprop(): 0.000223 s
+pool:           fprop(): 0.000154 s      bprop(): 0.000289 s
 flatten:        fprop(): 0.000029 s      bprop(): 0.000017 s
-fc_drop:        fprop(): 0.000217 s      bprop(): 0.000272 s
-act_relu:       fprop(): 0.000028 s      bprop(): 0.000050 s
-total_duration: 0.026394 s
-net._bprop(): 0.026110 s
+fc_drop:        fprop(): 0.001440 s      bprop(): 0.000276 s
+act_relu:       fprop(): 0.000027 s      bprop(): 0.000048 s
+total_duration: 0.027360 s
+net._bprop(): 0.025831 s
 </pre></div>
 </div>
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/profile_net.py"><code class="xref download docutils literal"><span class="pre">profile_net.py</span></code></a></p>
@@ -75,19 +75,20 @@ net._bprop(): 0.026110 s
 
 <span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
     <span class="nb">input</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">Input</span><span class="o">.</span><span class="n">from_any</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
-    <span class="n">net</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+    <span class="n">net</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">**</span><span class="nb">input</span><span class="o">.</span><span class="n">shapes</span><span class="p">)</span>
+    <span class="n">net</span><span class="o">.</span><span class="n">phase</span> <span class="o">=</span> <span class="s">&#39;train&#39;</span>
     <span class="n">batch</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">batches</span><span class="p">())</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">]</span>
     <span class="n">total_duration</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">layer_idx</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">layers</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
         <span class="k">def</span> <span class="nf">fprop</span><span class="p">():</span>
-            <span class="n">layer</span><span class="o">.</span><span class="n">fprop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;train&#39;</span><span class="p">)</span>
+            <span class="n">layer</span><span class="o">.</span><span class="n">fprop</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">fprop_duration</span> <span class="o">=</span> <span class="n">avg_running_time</span><span class="p">(</span><span class="n">fprop</span><span class="p">,</span> <span class="n">reps</span><span class="p">)</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">fprop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;train&#39;</span><span class="p">)</span>
-        <span class="n">to_x</span> <span class="o">=</span> <span class="n">layer_idx</span> <span class="o">&gt;</span> <span class="n">net</span><span class="o">.</span><span class="n">bprop_until</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">fprop</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">layer</span><span class="o">.</span><span class="n">bprop_to_x</span> <span class="o">=</span> <span class="n">layer_idx</span> <span class="o">&gt;</span> <span class="n">net</span><span class="o">.</span><span class="n">bprop_until</span>
 
         <span class="k">def</span> <span class="nf">bprop</span><span class="p">():</span>
-            <span class="n">layer</span><span class="o">.</span><span class="n">bprop</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">to_x</span><span class="o">=</span><span class="n">to_x</span><span class="p">)</span>
+            <span class="n">layer</span><span class="o">.</span><span class="n">bprop</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
         <span class="n">bprop_duration</span> <span class="o">=</span> <span class="n">avg_running_time</span><span class="p">(</span><span class="n">bprop</span><span class="p">,</span> <span class="n">reps</span><span class="p">)</span>
         <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:   </span><span class="se">\t</span><span class="s">fprop(): </span><span class="si">%.6f</span><span class="s"> s </span><span class="se">\t</span><span class="s"> bprop(): </span><span class="si">%.6f</span><span class="s"> s&#39;</span>
               <span class="o">%</span> <span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">fprop_duration</span><span class="p">,</span> <span class="n">bprop_duration</span><span class="p">))</span>
@@ -96,7 +97,7 @@ net._bprop(): 0.026110 s
     <span class="k">print</span><span class="p">(</span><span class="s">&#39;total_duration: </span><span class="si">%.6f</span><span class="s"> s&#39;</span> <span class="o">%</span> <span class="n">total_duration</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">nn_bprop</span><span class="p">():</span>
-        <span class="n">net</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">net</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="o">**</span><span class="n">batch</span><span class="p">)</span>
     <span class="n">nn_bprop_duration</span> <span class="o">=</span> <span class="n">avg_running_time</span><span class="p">(</span><span class="n">nn_bprop</span><span class="p">,</span> <span class="n">reps</span><span class="p">)</span>
     <span class="k">print</span><span class="p">(</span><span class="s">&#39;net._bprop(): </span><span class="si">%.6f</span><span class="s"> s&#39;</span> <span class="o">%</span> <span class="n">nn_bprop_duration</span><span class="p">)</span>
 
@@ -154,7 +155,7 @@ net._bprop(): 0.026110 s
 <span class="n">profile</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">train_input</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  0 minutes  3.2 seconds</p>
+<p><strong>Total running time of the example:</strong>  0 minutes  3.4 seconds</p>
 </div>
 
 

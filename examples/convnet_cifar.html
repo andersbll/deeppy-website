@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Convnets for image classification (2) &mdash; DeepPy 0.1.dev0 documentation</title>
+    <title>Convnets for image classification (2) &mdash; DeepPy 0.1.dev documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.dev0',
+        VERSION:     '0.1.dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="DeepPy 0.1.dev0 documentation" href="../index.html" />
+    <link rel="top" title="DeepPy 0.1.dev documentation" href="../index.html" />
     <link rel="up" title="Examples" href="index.html" />
     <link rel="next" title="Autoencoder pretraining of neural networks" href="autoencoders_mnist.html" />
     <link rel="prev" title="Convnets for image classification (1)" href="convnet_mnist.html" />
@@ -46,7 +46,7 @@
 <a class="horizontal reference internal image-reference" href="../_images/convnet_cifar_001.png"><img alt="../_images/convnet_cifar_001.png" class="horizontal" src="../_images/convnet_cifar_001.png" style="width: 320.0px; height: 240.0px;" /></a>
 <a class="horizontal reference internal image-reference" href="../_images/convnet_cifar_002.png"><img alt="../_images/convnet_cifar_002.png" class="horizontal" src="../_images/convnet_cifar_002.png" style="width: 320.0px; height: 240.0px;" /></a>
 <p><strong>Script output</strong>:</p>
-<div class="highlight-python"><div class="highlight"><pre>Test error rate: 0.3035
+<div class="highlight-python"><div class="highlight"><pre>Test error rate: 0.2966
 </pre></div>
 </div>
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/convnet_cifar.py"><code class="xref download docutils literal"><span class="pre">convnet_cifar.py</span></code></a></p>
@@ -69,7 +69,7 @@
 <span class="c"># Prepare network inputs</span>
 <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">128</span>
 <span class="n">train_input</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">SupervisedInput</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
-<span class="n">test_input</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">SupervisedInput</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+<span class="n">test_input</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
 
 <span class="c"># Setup network</span>
 <span class="k">def</span> <span class="nf">conv_layer</span><span class="p">(</span><span class="n">n_filters</span><span class="p">):</span>
@@ -115,8 +115,8 @@
 
 
 <span class="c"># Train network</span>
-<span class="k">def</span> <span class="nf">val_error</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">net</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">test_input</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_error</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_input</span><span class="p">)</span> <span class="o">!=</span> <span class="n">y_test</span><span class="p">)</span>
 <span class="n">n_epochs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
 <span class="n">learn_rate</span> <span class="o">=</span> <span class="mf">0.05</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">max_epochs</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">n_epochs</span><span class="p">):</span>
@@ -125,12 +125,11 @@
         <span class="n">max_epochs</span><span class="o">=</span><span class="n">max_epochs</span><span class="p">,</span>
         <span class="n">learn_rule</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">Momentum</span><span class="p">(</span><span class="n">learn_rate</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">train_input</span><span class="p">,</span> <span class="n">val_error</span><span class="p">)</span>
+    <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">train_input</span><span class="p">,</span> <span class="n">test_error</span><span class="p">)</span>
 
 
 <span class="c"># Evaluate on test data</span>
-<span class="n">error</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">test_input</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&#39;Test error rate: </span><span class="si">%.4f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">error</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;Test error rate: </span><span class="si">%.4f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">test_error</span><span class="p">())</span>
 
 
 <span class="c"># Plot image examples.</span>
@@ -148,7 +147,8 @@
 <span class="n">plot_img</span><span class="p">(</span><span class="n">img_tile</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;CIFAR10 example images&#39;</span><span class="p">)</span>
 
 <span class="c"># Plot convolutional filters.</span>
-<span class="n">filters</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">array</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">net</span><span class="o">.</span><span class="n">layers</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">dp</span><span class="o">.</span><span class="n">Convolution</span><span class="p">)]</span>
+<span class="n">filters</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">array</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">net</span><span class="o">.</span><span class="n">layers</span>
+           <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">dp</span><span class="o">.</span><span class="n">Convolution</span><span class="p">)]</span>
 
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">gs</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">height_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
@@ -162,7 +162,7 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  3 minutes  20.4 seconds</p>
+<p><strong>Total running time of the example:</strong>  2 minutes  42.4 seconds</p>
 </div>
 
 

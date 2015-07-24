@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Convnets for image classification (1) &mdash; DeepPy 0.1.dev0 documentation</title>
+    <title>Convnets for image classification (1) &mdash; DeepPy 0.1.dev documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.dev0',
+        VERSION:     '0.1.dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="DeepPy 0.1.dev0 documentation" href="../index.html" />
+    <link rel="top" title="DeepPy 0.1.dev documentation" href="../index.html" />
     <link rel="up" title="Examples" href="index.html" />
     <link rel="next" title="Convnets for image classification (2)" href="convnet_cifar.html" />
     <link rel="prev" title="Digit classification" href="mlp_mnist.html" />
@@ -68,7 +68,7 @@
 <span class="c"># Prepare network inputs</span>
 <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">128</span>
 <span class="n">train_input</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">SupervisedInput</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
-<span class="n">test_input</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">SupervisedInput</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+<span class="n">test_input</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
 
 <span class="c"># Setup network</span>
 <span class="k">def</span> <span class="nf">pool_layer</span><span class="p">():</span>
@@ -142,7 +142,8 @@
          <span class="s">&#39;All </span><span class="si">%i</span><span class="s"> misclassified digits&#39;</span> <span class="o">%</span> <span class="n">n_errors</span><span class="p">)</span>
 
 <span class="c"># Plot convolutional filters.</span>
-<span class="n">filters</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">array</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">net</span><span class="o">.</span><span class="n">layers</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">dp</span><span class="o">.</span><span class="n">Convolution</span><span class="p">)]</span>
+<span class="n">filters</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">array</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">net</span><span class="o">.</span><span class="n">layers</span>
+           <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">dp</span><span class="o">.</span><span class="n">Convolution</span><span class="p">)]</span>
 
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">gs</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">height_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
@@ -155,7 +156,7 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  4 minutes  58.2 seconds</p>
+<p><strong>Total running time of the example:</strong>  4 minutes  44.8 seconds</p>
 </div>
 
 

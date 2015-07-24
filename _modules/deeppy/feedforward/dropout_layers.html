@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>deeppy.feedforward.dropout_layers &mdash; DeepPy 0.1.dev0 documentation</title>
+    <title>deeppy.feedforward.dropout_layers &mdash; DeepPy 0.1.dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1.dev0',
+        VERSION:     '0.1.dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="DeepPy 0.1.dev0 documentation" href="../../../index.html" />
+    <link rel="top" title="DeepPy 0.1.dev documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" />
    
   
@@ -42,23 +42,27 @@
   <h1>Source code for deeppy.feedforward.dropout_layers</h1><div class="highlight"><pre>
 <span class="kn">import</span> <span class="nn">cudarray</span> <span class="kn">as</span> <span class="nn">ca</span>
 <span class="kn">from</span> <span class="nn">.layers</span> <span class="kn">import</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">FullyConnected</span>
+<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">PhaseMixin</span>
 
 
-<div class="viewcode-block" id="Dropout"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.dropout_layers.Dropout">[docs]</a><span class="k">class</span> <span class="nc">Dropout</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+<div class="viewcode-block" id="Dropout"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.dropout_layers.Dropout">[docs]</a><span class="k">class</span> <span class="nc">Dropout</span><span class="p">(</span><span class="n">Layer</span><span class="p">,</span> <span class="n">PhaseMixin</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;dropout&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">dropout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_mask</span> <span class="o">=</span> <span class="bp">None</span>
 
-<div class="viewcode-block" id="Dropout.fprop"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.dropout_layers.Dropout.fprop">[docs]</a>    <span class="k">def</span> <span class="nf">fprop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">phase</span><span class="p">):</span>
+<div class="viewcode-block" id="Dropout.fprop"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.dropout_layers.Dropout.fprop">[docs]</a>    <span class="k">def</span> <span class="nf">fprop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">phase</span> <span class="o">==</span> <span class="s">&#39;train&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span> <span class="o">==</span> <span class="s">&#39;train&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">&lt;</span> <span class="n">ca</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
                 <span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_mask</span>
-            <span class="k">elif</span> <span class="n">phase</span> <span class="o">==</span> <span class="s">&#39;test&#39;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span> <span class="o">==</span> <span class="s">&#39;test&#39;</span><span class="p">:</span>
                 <span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Invalid phase: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">y</span>
 </div>
-<div class="viewcode-block" id="Dropout.bprop"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.dropout_layers.Dropout.bprop">[docs]</a>    <span class="k">def</span> <span class="nf">bprop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_grad</span><span class="p">,</span> <span class="n">to_x</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Dropout.bprop"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.dropout_layers.Dropout.bprop">[docs]</a>    <span class="k">def</span> <span class="nf">bprop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_grad</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">y_grad</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_mask</span>
         <span class="k">else</span><span class="p">:</span>
@@ -68,28 +72,31 @@
         <span class="k">return</span> <span class="n">x_shape</span>
 
 </div></div>
-<div class="viewcode-block" id="DropoutFullyConnected"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.dropout_layers.DropoutFullyConnected">[docs]</a><span class="k">class</span> <span class="nc">DropoutFullyConnected</span><span class="p">(</span><span class="n">FullyConnected</span><span class="p">):</span>
+<div class="viewcode-block" id="DropoutFullyConnected"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.dropout_layers.DropoutFullyConnected">[docs]</a><span class="k">class</span> <span class="nc">DropoutFullyConnected</span><span class="p">(</span><span class="n">FullyConnected</span><span class="p">,</span> <span class="n">PhaseMixin</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_out</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">DropoutFullyConnected</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
             <span class="n">n_out</span><span class="o">=</span><span class="n">n_out</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">bias</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;fc_drop&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">dropout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_mask</span> <span class="o">=</span> <span class="bp">None</span>
 
-<div class="viewcode-block" id="DropoutFullyConnected.fprop"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.dropout_layers.DropoutFullyConnected.fprop">[docs]</a>    <span class="k">def</span> <span class="nf">fprop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">phase</span><span class="p">):</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">DropoutFullyConnected</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">fprop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">phase</span><span class="p">)</span>
+<div class="viewcode-block" id="DropoutFullyConnected.fprop"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.dropout_layers.DropoutFullyConnected.fprop">[docs]</a>    <span class="k">def</span> <span class="nf">fprop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">DropoutFullyConnected</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">fprop</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">phase</span> <span class="o">==</span> <span class="s">&#39;train&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span> <span class="o">==</span> <span class="s">&#39;train&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">&lt;</span> <span class="n">ca</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
                 <span class="n">y</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_mask</span>
-            <span class="k">elif</span> <span class="n">phase</span> <span class="o">==</span> <span class="s">&#39;test&#39;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span> <span class="o">==</span> <span class="s">&#39;test&#39;</span><span class="p">:</span>
                 <span class="n">y</span> <span class="o">*=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Invalid phase: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">y</span>
 </div>
-<div class="viewcode-block" id="DropoutFullyConnected.bprop"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.dropout_layers.DropoutFullyConnected.bprop">[docs]</a>    <span class="k">def</span> <span class="nf">bprop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_grad</span><span class="p">,</span> <span class="n">to_x</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="DropoutFullyConnected.bprop"><a class="viewcode-back" href="../../../api-reference/feedforward.html#deeppy.feedforward.dropout_layers.DropoutFullyConnected.bprop">[docs]</a>    <span class="k">def</span> <span class="nf">bprop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_grad</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="n">y_grad</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_mask</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">DropoutFullyConnected</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">bprop</span><span class="p">(</span><span class="n">y_grad</span><span class="p">,</span> <span class="n">to_x</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">DropoutFullyConnected</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">bprop</span><span class="p">(</span><span class="n">y_grad</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>

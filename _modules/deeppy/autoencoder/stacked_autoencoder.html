@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>deeppy.autoencoder.stacked_autoencoder &mdash; DeepPy 0.1.dev0 documentation</title>
+    <title>deeppy.autoencoder.stacked_autoencoder &mdash; DeepPy 0.1.dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1.dev0',
+        VERSION:     '0.1.dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="DeepPy 0.1.dev0 documentation" href="../../../index.html" />
+    <link rel="top" title="DeepPy 0.1.dev documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" />
    
   
@@ -46,33 +46,20 @@
 <span class="kn">from</span> <span class="nn">.autoencoder</span> <span class="kn">import</span> <span class="n">Autoencoder</span>
 
 
-<div class="viewcode-block" id="InputWrap"><a class="viewcode-back" href="../../../api-reference/autoencoder.html#deeppy.autoencoder.stacked_autoencoder.InputWrap">[docs]</a><span class="k">class</span> <span class="nc">InputWrap</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="nb">input</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">x_shape</span> <span class="o">=</span> <span class="n">x_shape</span>
-
-    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-        <span class="c"># Wrap Input methods</span>
-        <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ae</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-
-</div>
 <div class="viewcode-block" id="StackedAutoencoderLayer"><a class="viewcode-back" href="../../../api-reference/autoencoder.html#deeppy.autoencoder.stacked_autoencoder.StackedAutoencoderLayer">[docs]</a><span class="k">class</span> <span class="nc">StackedAutoencoderLayer</span><span class="p">(</span><span class="n">Autoencoder</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ae</span><span class="p">,</span> <span class="n">prev_layers</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ae</span> <span class="o">=</span> <span class="n">ae</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prev_layers</span> <span class="o">=</span> <span class="n">prev_layers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="o">=</span> <span class="bp">False</span>
 
-    <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">):</span>
         <span class="c"># Setup layers sequentially</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span><span class="p">:</span>
             <span class="k">return</span>
-        <span class="n">next_shape</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">x_shape</span>
         <span class="k">for</span> <span class="n">ae</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev_layers</span><span class="p">:</span>
-            <span class="n">ae</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="n">InputWrap</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">next_shape</span><span class="p">))</span>
-            <span class="n">next_shape</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">output_shape</span><span class="p">(</span><span class="n">next_shape</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ae</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="n">InputWrap</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">next_shape</span><span class="p">))</span>
+            <span class="n">ae</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="n">x_shape</span><span class="p">)</span>
+            <span class="n">x_shape</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">output_shape</span><span class="p">(</span><span class="n">x_shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ae</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="n">x_shape</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="o">=</span> <span class="bp">True</span>
 
     <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -107,14 +94,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">Loss</span><span class="o">.</span><span class="n">from_any</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span><span class="p">:</span>
             <span class="k">return</span>
-        <span class="n">next_shape</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">x_shape</span>
         <span class="k">for</span> <span class="n">ae</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">ae</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="n">InputWrap</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">next_shape</span><span class="p">))</span>
-            <span class="n">next_shape</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">output_shape</span><span class="p">(</span><span class="n">next_shape</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="n">next_shape</span><span class="p">)</span>
+            <span class="n">ae</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="n">x_shape</span><span class="p">)</span>
+            <span class="n">x_shape</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">output_shape</span><span class="p">(</span><span class="n">x_shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="n">x_shape</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="o">=</span> <span class="bp">True</span>
 
     <span class="nd">@property</span>
@@ -144,11 +130,10 @@
             <span class="n">y_grad</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">encode_bprop</span><span class="p">(</span><span class="n">y_grad</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">y_grad</span>
 </div>
-    <span class="k">def</span> <span class="nf">_output_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape</span><span class="p">):</span>
-        <span class="n">next_shape</span> <span class="o">=</span> <span class="n">input_shape</span>
+    <span class="k">def</span> <span class="nf">_output_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">ae</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">next_shape</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">output_shape</span><span class="p">(</span><span class="n">next_shape</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">next_shape</span>
+            <span class="n">x_shape</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">output_shape</span><span class="p">(</span><span class="n">x_shape</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x_shape</span>
 
 <div class="viewcode-block" id="StackedAutoencoder.feedforward_layers"><a class="viewcode-back" href="../../../api-reference/autoencoder.html#deeppy.autoencoder.stacked_autoencoder.StackedAutoencoder.feedforward_layers">[docs]</a>    <span class="k">def</span> <span class="nf">feedforward_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">feedforward_layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">ae</span><span class="o">.</span><span class="n">feedforward_layers</span><span class="p">()</span> <span class="k">for</span> <span class="n">ae</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">]</span>

@@ -28,7 +28,7 @@ x_test = scaler.transform(x_test)
 # Prepare network inputs
 batch_size = 128
 train_input = dp.SupervisedInput(x_train, y_train, batch_size=batch_size)
-test_input = dp.SupervisedInput(x_test, y_test)
+test_input = dp.Input(x_test)
 
 # Setup network
 def pool_layer():
@@ -102,7 +102,8 @@ plot_img(dp.misc.img_tile(dp.misc.img_stretch(x_errors), aspect_ratio=0.6),
          'All %i misclassified digits' % n_errors)
 
 # Plot convolutional filters.
-filters = [l.W.array for l in net.layers if isinstance(l, dp.Convolution)]
+filters = [l.weights.array for l in net.layers
+           if isinstance(l, dp.Convolution)]
 
 fig = plt.figure()
 gs = matplotlib.gridspec.GridSpec(2, 1, height_ratios=[1, 3])

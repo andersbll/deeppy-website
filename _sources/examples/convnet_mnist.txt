@@ -26,5 +26,5 @@ Convnets for image classification (1)
 .. literalinclude:: convnet_mnist.py
     :lines: 8-
 
-**Total running time of the example:**  4 minutes  58.2 seconds
+**Total running time of the example:**  4 minutes  44.8 seconds
     

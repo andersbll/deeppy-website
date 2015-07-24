@@ -23,7 +23,7 @@ x_test = scaler.transform(x_test)
 # Prepare network inputs
 batch_size = 128
 train_input = dp.SupervisedInput(x_train, y_train, batch_size=batch_size)
-test_input = dp.SupervisedInput(x_test, y_test)
+test_input = dp.Input(x_test)
 
 # Setup network
 weight_gain = 2.0
@@ -61,7 +61,7 @@ for i, epochs in enumerate(n_epochs):
     trainer.train(net, train_input)
 
 # Evaluate on test data
-error = net.error(test_input)
+error = np.mean(net.predict(test_input) != y_test)
 print('Test error rate: %.4f' % error)
 
 
@@ -78,8 +78,8 @@ plot_img(dp.misc.img_tile(dp.misc.img_stretch(imgs)),
          'Dataset examples')
 
 # Plot learned features in first layer
-W = np.array(net.layers[0].W.array)
-W = np.reshape(W.T, (-1,) + dataset.img_shape)
-W = W[np.argsort(np.std(W, axis=(1, 2)))[-64:]]
-plot_img(dp.misc.img_tile(dp.misc.img_stretch(W)),
+w = np.array(net.layers[0].weights.array)
+w = np.reshape(w.T, (-1,) + dataset.img_shape)
+w = w[np.argsort(np.std(w, axis=(1, 2)))[-64:]]
+plot_img(dp.misc.img_tile(dp.misc.img_stretch(w)),
          'Examples of features learned')

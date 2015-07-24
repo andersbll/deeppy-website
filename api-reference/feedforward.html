@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>API reference, deeppy.feedforward &mdash; DeepPy 0.1.dev0 documentation</title>
+    <title>API reference, deeppy.feedforward &mdash; DeepPy 0.1.dev documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.dev0',
+        VERSION:     '0.1.dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="DeepPy 0.1.dev0 documentation" href="../index.html" />
+    <link rel="top" title="DeepPy 0.1.dev documentation" href="../index.html" />
     <link rel="up" title="API reference" href="index.html" />
     <link rel="next" title="Contributor guide" href="../contributor-guide.html" />
     <link rel="prev" title="API reference, deeppy.autoencoder" href="autoencoder.html" />
@@ -48,10 +48,15 @@
 <dl class="class">
 <dt id="deeppy.feedforward.neural_network.NeuralNetwork">
 <em class="property">class </em><code class="descclassname">deeppy.feedforward.neural_network.</code><code class="descname">NeuralNetwork</code><span class="sig-paren">(</span><em>layers</em>, <em>loss</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/neural_network.html#NeuralNetwork"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.neural_network.NeuralNetwork" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="index.html#deeppy.base.Model" title="deeppy.base.Model"><code class="xref py py-class docutils literal"><span class="pre">deeppy.base.Model</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="index.html#deeppy.base.Model" title="deeppy.base.Model"><code class="xref py py-class docutils literal"><span class="pre">deeppy.base.Model</span></code></a>, <a class="reference internal" href="index.html#deeppy.base.PhaseMixin" title="deeppy.base.PhaseMixin"><code class="xref py py-class docutils literal"><span class="pre">deeppy.base.PhaseMixin</span></code></a></p>
 <dl class="method">
-<dt id="deeppy.feedforward.neural_network.NeuralNetwork.error">
-<code class="descname">error</code><span class="sig-paren">(</span><em>input</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/neural_network.html#NeuralNetwork.error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.neural_network.NeuralNetwork.error" title="Permalink to this definition">¶</a></dt>
+<dt id="deeppy.feedforward.neural_network.NeuralNetwork.fprop">
+<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/neural_network.html#NeuralNetwork.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.neural_network.NeuralNetwork.fprop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="deeppy.feedforward.neural_network.NeuralNetwork.phase">
+<code class="descname">phase</code><a class="headerlink" href="#deeppy.feedforward.neural_network.NeuralNetwork.phase" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -60,6 +65,11 @@
 <dd><p>Calculate the output for the given input x.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="deeppy.feedforward.neural_network.NeuralNetwork.y_shape">
+<code class="descname">y_shape</code><span class="sig-paren">(</span><em>x_shape</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/neural_network.html#NeuralNetwork.y_shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.neural_network.NeuralNetwork.y_shape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -67,16 +77,16 @@
 <span id="layers"></span><h2>Layers<a class="headerlink" href="#module-deeppy.feedforward.layers" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="deeppy.feedforward.layers.Activation">
-<em class="property">class </em><code class="descclassname">deeppy.feedforward.layers.</code><code class="descname">Activation</code><span class="sig-paren">(</span><em>type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/layers.html#Activation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.layers.Activation" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">deeppy.feedforward.layers.</code><code class="descname">Activation</code><span class="sig-paren">(</span><em>method</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/layers.html#Activation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.layers.Activation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#deeppy.feedforward.layers.Layer" title="deeppy.feedforward.layers.Layer"><code class="xref py py-class docutils literal"><span class="pre">deeppy.feedforward.layers.Layer</span></code></a></p>
 <dl class="method">
 <dt id="deeppy.feedforward.layers.Activation.bprop">
-<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em>, <em>to_x=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/layers.html#Activation.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.layers.Activation.bprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/layers.html#Activation.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.layers.Activation.bprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="deeppy.feedforward.layers.Activation.fprop">
-<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em>, <em>phase</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/layers.html#Activation.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.layers.Activation.fprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/layers.html#Activation.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.layers.Activation.fprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -92,12 +102,12 @@
 <dd><p>Bases: <a class="reference internal" href="#deeppy.feedforward.layers.Layer" title="deeppy.feedforward.layers.Layer"><code class="xref py py-class docutils literal"><span class="pre">deeppy.feedforward.layers.Layer</span></code></a>, <a class="reference internal" href="index.html#deeppy.base.ParamMixin" title="deeppy.base.ParamMixin"><code class="xref py py-class docutils literal"><span class="pre">deeppy.base.ParamMixin</span></code></a></p>
 <dl class="method">
 <dt id="deeppy.feedforward.layers.FullyConnected.bprop">
-<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em>, <em>to_x=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/layers.html#FullyConnected.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.layers.FullyConnected.bprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/layers.html#FullyConnected.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.layers.FullyConnected.bprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="deeppy.feedforward.layers.FullyConnected.fprop">
-<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em>, <em>phase</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/layers.html#FullyConnected.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.layers.FullyConnected.fprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/layers.html#FullyConnected.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.layers.FullyConnected.fprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -113,13 +123,18 @@
 <dd><p>Bases: <a class="reference internal" href="index.html#deeppy.base.PickleMixin" title="deeppy.base.PickleMixin"><code class="xref py py-class docutils literal"><span class="pre">deeppy.base.PickleMixin</span></code></a></p>
 <dl class="method">
 <dt id="deeppy.feedforward.layers.Layer.bprop">
-<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em>, <em>to_x=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/layers.html#Layer.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.layers.Layer.bprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/layers.html#Layer.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.layers.Layer.bprop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate input gradient.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="deeppy.feedforward.layers.Layer.bprop_to_x">
+<code class="descname">bprop_to_x</code><em class="property"> = True</em><a class="headerlink" href="#deeppy.feedforward.layers.Layer.bprop_to_x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="deeppy.feedforward.layers.Layer.fprop">
-<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em>, <em>phase</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/layers.html#Layer.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.layers.Layer.fprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/layers.html#Layer.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.layers.Layer.fprop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate layer output for given input (forward propagation).</p>
 </dd></dl>
 
@@ -139,12 +154,12 @@ x_shape[1:] is the shape of the feature.</p>
 <dd><p>Bases: <a class="reference internal" href="#deeppy.feedforward.layers.Layer" title="deeppy.feedforward.layers.Layer"><code class="xref py py-class docutils literal"><span class="pre">deeppy.feedforward.layers.Layer</span></code></a>, <a class="reference internal" href="index.html#deeppy.base.ParamMixin" title="deeppy.base.ParamMixin"><code class="xref py py-class docutils literal"><span class="pre">deeppy.base.ParamMixin</span></code></a></p>
 <dl class="method">
 <dt id="deeppy.feedforward.layers.PReLU.bprop">
-<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em>, <em>to_x=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/layers.html#PReLU.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.layers.PReLU.bprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/layers.html#PReLU.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.layers.PReLU.bprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="deeppy.feedforward.layers.PReLU.fprop">
-<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em>, <em>phase</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/layers.html#PReLU.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.layers.PReLU.fprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/layers.html#PReLU.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.layers.PReLU.fprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -163,12 +178,12 @@ x_shape[1:] is the shape of the feature.</p>
 <dd><p>Bases: <a class="reference internal" href="#deeppy.feedforward.layers.Layer" title="deeppy.feedforward.layers.Layer"><code class="xref py py-class docutils literal"><span class="pre">deeppy.feedforward.layers.Layer</span></code></a>, <a class="reference internal" href="index.html#deeppy.base.ParamMixin" title="deeppy.base.ParamMixin"><code class="xref py py-class docutils literal"><span class="pre">deeppy.base.ParamMixin</span></code></a></p>
 <dl class="method">
 <dt id="deeppy.feedforward.convnet_layers.Convolution.bprop">
-<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em>, <em>to_x=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#Convolution.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.Convolution.bprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#Convolution.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.Convolution.bprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="deeppy.feedforward.convnet_layers.Convolution.fprop">
-<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em>, <em>phase</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#Convolution.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.Convolution.fprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#Convolution.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.Convolution.fprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -184,12 +199,12 @@ x_shape[1:] is the shape of the feature.</p>
 <dd><p>Bases: <a class="reference internal" href="#deeppy.feedforward.layers.Layer" title="deeppy.feedforward.layers.Layer"><code class="xref py py-class docutils literal"><span class="pre">deeppy.feedforward.layers.Layer</span></code></a></p>
 <dl class="method">
 <dt id="deeppy.feedforward.convnet_layers.Flatten.bprop">
-<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em>, <em>to_x=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#Flatten.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.Flatten.bprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#Flatten.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.Flatten.bprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="deeppy.feedforward.convnet_layers.Flatten.fprop">
-<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em>, <em>phase</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#Flatten.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.Flatten.fprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#Flatten.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.Flatten.fprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -205,12 +220,12 @@ x_shape[1:] is the shape of the feature.</p>
 <dd><p>Bases: <a class="reference internal" href="#deeppy.feedforward.layers.Layer" title="deeppy.feedforward.layers.Layer"><code class="xref py py-class docutils literal"><span class="pre">deeppy.feedforward.layers.Layer</span></code></a></p>
 <dl class="method">
 <dt id="deeppy.feedforward.convnet_layers.LocalContrastNormalization.bprop">
-<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em>, <em>to_x=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#LocalContrastNormalization.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.LocalContrastNormalization.bprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#LocalContrastNormalization.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.LocalContrastNormalization.bprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="deeppy.feedforward.convnet_layers.LocalContrastNormalization.fprop">
-<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em>, <em>phase</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#LocalContrastNormalization.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.LocalContrastNormalization.fprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#LocalContrastNormalization.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.LocalContrastNormalization.fprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
@@ -231,12 +246,12 @@ x_shape[1:] is the shape of the feature.</p>
 <dd><p>Bases: <a class="reference internal" href="#deeppy.feedforward.layers.Layer" title="deeppy.feedforward.layers.Layer"><code class="xref py py-class docutils literal"><span class="pre">deeppy.feedforward.layers.Layer</span></code></a></p>
 <dl class="method">
 <dt id="deeppy.feedforward.convnet_layers.LocalResponseNormalization.bprop">
-<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em>, <em>to_x=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#LocalResponseNormalization.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.LocalResponseNormalization.bprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#LocalResponseNormalization.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.LocalResponseNormalization.bprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="deeppy.feedforward.convnet_layers.LocalResponseNormalization.fprop">
-<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em>, <em>phase</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#LocalResponseNormalization.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.LocalResponseNormalization.fprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#LocalResponseNormalization.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.LocalResponseNormalization.fprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -252,12 +267,12 @@ x_shape[1:] is the shape of the feature.</p>
 <dd><p>Bases: <a class="reference internal" href="#deeppy.feedforward.layers.Layer" title="deeppy.feedforward.layers.Layer"><code class="xref py py-class docutils literal"><span class="pre">deeppy.feedforward.layers.Layer</span></code></a></p>
 <dl class="method">
 <dt id="deeppy.feedforward.convnet_layers.Pool.bprop">
-<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em>, <em>to_x=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#Pool.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.Pool.bprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#Pool.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.Pool.bprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="deeppy.feedforward.convnet_layers.Pool.fprop">
-<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em>, <em>phase</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#Pool.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.Pool.fprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/convnet_layers.html#Pool.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.convnet_layers.Pool.fprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -278,15 +293,15 @@ x_shape[1:] is the shape of the feature.</p>
 <dl class="class">
 <dt id="deeppy.feedforward.dropout_layers.Dropout">
 <em class="property">class </em><code class="descclassname">deeppy.feedforward.dropout_layers.</code><code class="descname">Dropout</code><span class="sig-paren">(</span><em>dropout=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/dropout_layers.html#Dropout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.dropout_layers.Dropout" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#deeppy.feedforward.layers.Layer" title="deeppy.feedforward.layers.Layer"><code class="xref py py-class docutils literal"><span class="pre">deeppy.feedforward.layers.Layer</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#deeppy.feedforward.layers.Layer" title="deeppy.feedforward.layers.Layer"><code class="xref py py-class docutils literal"><span class="pre">deeppy.feedforward.layers.Layer</span></code></a>, <a class="reference internal" href="index.html#deeppy.base.PhaseMixin" title="deeppy.base.PhaseMixin"><code class="xref py py-class docutils literal"><span class="pre">deeppy.base.PhaseMixin</span></code></a></p>
 <dl class="method">
 <dt id="deeppy.feedforward.dropout_layers.Dropout.bprop">
-<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em>, <em>to_x=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/dropout_layers.html#Dropout.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.dropout_layers.Dropout.bprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/dropout_layers.html#Dropout.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.dropout_layers.Dropout.bprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="deeppy.feedforward.dropout_layers.Dropout.fprop">
-<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em>, <em>phase</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/dropout_layers.html#Dropout.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.dropout_layers.Dropout.fprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/dropout_layers.html#Dropout.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.dropout_layers.Dropout.fprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -299,15 +314,15 @@ x_shape[1:] is the shape of the feature.</p>
 <dl class="class">
 <dt id="deeppy.feedforward.dropout_layers.DropoutFullyConnected">
 <em class="property">class </em><code class="descclassname">deeppy.feedforward.dropout_layers.</code><code class="descname">DropoutFullyConnected</code><span class="sig-paren">(</span><em>n_out</em>, <em>weights</em>, <em>bias=0.0</em>, <em>dropout=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/dropout_layers.html#DropoutFullyConnected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.dropout_layers.DropoutFullyConnected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#deeppy.feedforward.layers.FullyConnected" title="deeppy.feedforward.layers.FullyConnected"><code class="xref py py-class docutils literal"><span class="pre">deeppy.feedforward.layers.FullyConnected</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#deeppy.feedforward.layers.FullyConnected" title="deeppy.feedforward.layers.FullyConnected"><code class="xref py py-class docutils literal"><span class="pre">deeppy.feedforward.layers.FullyConnected</span></code></a>, <a class="reference internal" href="index.html#deeppy.base.PhaseMixin" title="deeppy.base.PhaseMixin"><code class="xref py py-class docutils literal"><span class="pre">deeppy.base.PhaseMixin</span></code></a></p>
 <dl class="method">
 <dt id="deeppy.feedforward.dropout_layers.DropoutFullyConnected.bprop">
-<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em>, <em>to_x=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/dropout_layers.html#DropoutFullyConnected.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.dropout_layers.DropoutFullyConnected.bprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bprop</code><span class="sig-paren">(</span><em>y_grad</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/dropout_layers.html#DropoutFullyConnected.bprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.dropout_layers.DropoutFullyConnected.bprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="deeppy.feedforward.dropout_layers.DropoutFullyConnected.fprop">
-<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em>, <em>phase</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/dropout_layers.html#DropoutFullyConnected.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.dropout_layers.DropoutFullyConnected.fprop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fprop</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deeppy/feedforward/dropout_layers.html#DropoutFullyConnected.fprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deeppy.feedforward.dropout_layers.DropoutFullyConnected.fprop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
